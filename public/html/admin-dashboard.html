@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard - VIVARIS CARE</title>
+  <link rel="stylesheet" href="/css/design-system.css">
+  <link rel="stylesheet" href="/css/admin-dashboard.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="admin-dashboard-body">
+  <!-- SIDEBAR -->
+  <aside class="admin-sidebar">
+    <div class="sidebar-header">
+      <div class="logo-badge">
+        <i class="fas fa-crown"></i>
+      </div>
+      <h2>VIVARIS ADMIN</h2>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-section">
+        <p class="nav-section-title">PRINCIPAL</p>
+        <a href="#" class="nav-item active" data-page="dashboard">
+          <i class="fas fa-chart-line"></i>
+          <span>Dashboard</span>
+        </a>
+        <a href="#" class="nav-item" data-page="residents">
+          <i class="fas fa-users"></i>
+          <span>Residentes</span>
+          <span class="nav-badge">1</span>
+        </a>
+      </div>
+
+      <div class="nav-section">
+        <p class="nav-section-title">GERENCIAMENTO</p>
+        <a href="#" class="nav-item" data-page="users">
+          <i class="fas fa-user-shield"></i>
+          <span>Usuários</span>
+        </a>
+        <a href="#" class="nav-item" data-page="pricing">
+          <i class="fas fa-tags"></i>
+          <span>Preços/Pacotes</span>
+        </a>
+        <a href="#" class="nav-item" data-page="units">
+          <i class="fas fa-building"></i>
+          <span>Unidades</span>
+        </a>
+      </div>
+
+      <div class="nav-section">
+        <p class="nav-section-title">RELATÓRIOS & AUDITORIA</p>
+        <a href="#" class="nav-item" data-page="reports">
+          <i class="fas fa-file-pdf"></i>
+          <span>Relatórios</span>
+        </a>
+        <a href="#" class="nav-item" data-page="audit-log">
+          <i class="fas fa-history"></i>
+          <span>Audit Trail</span>
+        </a>
+      </div>
+    </nav>
+
+    <div class="sidebar-footer">
+      <button class="nav-item logout-btn" id="logoutBtn">
+        <i class="fas fa-sign-out-alt"></i>
+        <span>Sair</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="admin-main-content">
+    <!-- TOP BAR -->
+    <header class="admin-top-bar">
+      <div class="top-bar-left">
+        <h1 id="pageTitle">Dashboard</h1>
+        <p id="pageSubtitle">Visão geral do sistema</p>
+      </div>
+      <div class="top-bar-right">
+        <div class="search-box">
+          <i class="fas fa-search"></i>
+          <input type="text" placeholder="Buscar residente, usuário...">
+        </div>
+        <button class="btn-icon notification-btn">
+          <i class="fas fa-bell"></i>
+          <span class="badge">5</span>
+        </button>
+        <div class="user-profile">
+          <div class="avatar" id="userAvatar">A</div>
+          <div class="user-info">
+            <p id="userName">Admin</p>
+            <small id="userRole">Administrador</small>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- PAGES CONTAINER -->
+    <div class="admin-pages">
+      <!-- DASHBOARD PAGE -->
+      <div class="admin-page active" id="page-dashboard">
+        <div class="container">
+          <!-- WELCOME SECTION -->
+          <div class="admin-welcome">
+            <h2>Bem-vindo ao Painel de Controle</h2>
+            <p>Visão completa do sistema VIVARIS CARE</p>
+          </div>
+
+          <!-- STATS GRID -->
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-header">
+                <h3>Total de Residentes</h3>
+                <i class="fas fa-users"></i>
+              </div>
+              <div class="stat-value" id="statResidents">1</div>
+              <div class="stat-change positive">
+                <i class="fas fa-arrow-up"></i> 2% esta semana
+              </div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-header">
+                <h3>Usuários Ativos</h3>
+                <i class="fas fa-user-check"></i>
+              </div>
+              <div class="stat-value" id="statUsers">5</div>
+              <div class="stat-change">
+                <i class="fas fa-circle"></i> 4 online
+              </div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-header">
+                <h3>Unidades</h3>
+                <i class="fas fa-building"></i>
+              </div>
+              <div class="stat-value" id="statUnits">1</div>
+              <div class="stat-change">
+                <i class="fas fa-check"></i> Ativa
+              </div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-header">
+                <h3>Receita Mensal</h3>
+                <i class="fas fa-dollar-sign"></i>
+              </div>
+              <div class="stat-value" id="statRevenue">R$ 4,5K</div>
+              <div class="stat-change positive">
+                <i class="fas fa-arrow-up"></i> 15% vs mês anterior
+              </div>
+            </div>
+          </div>
+
+          <!-- CONTENT GRID -->
+          <div class="admin-content-grid">
+            <!-- RECENT RESIDENTS -->
+            <section class="admin-section">
+              <div class="section-header">
+                <h3>Residentes Recentes</h3>
+                <a href="#" class="link-more" onclick="switchPage('residents'); return false;">Ver todos →</a>
+              </div>
+              <div class="residents-list" id="adminResidentsList">
+                <div class="empty-state">
+                  <i class="fas fa-inbox"></i>
+                  <p>Nenhum residente cadastrado</p>
+                </div>
+              </div>
+            </section>
+
+            <!-- QUICK ACTIONS -->
+            <section class="admin-section">
+              <div class="section-header">
+                <h3>Ações Rápidas</h3>
+              </div>
+              <div class="actions-grid">
+                <button class="action-card" onclick="window.location.href='/html/resident-form.html'">
+                  <i class="fas fa-user-plus"></i>
+                  <span>Novo Residente</span>
+                </button>
+                <button class="action-card">
+                  <i class="fas fa-user-shield"></i>
+                  <span>Novo Usuário</span>
+                </button>
+                <button class="action-card">
+                  <i class="fas fa-building"></i>
+                  <span>Nova Unidade</span>
+                </button>
+                <button class="action-card">
+                  <i class="fas fa-file-pdf"></i>
+                  <span>Gerar Relatório</span>
+                </button>
+              </div>
+            </section>
+          </div>
+
+          <!-- SYSTEM HEALTH -->
+          <section class="admin-section">
+            <div class="section-header">
+              <h3>Saúde do Sistema</h3>
+            </div>
+            <div class="health-grid">
+              <div class="health-item">
+                <div class="health-label">
+                  <span>Banco de Dados</span>
+                  <i class="fas fa-database"></i>
+                </div>
+                <div class="health-status online">Online</div>
+              </div>
+              <div class="health-item">
+                <div class="health-label">
+                  <span>API Backend</span>
+                  <i class="fas fa-server"></i>
+                </div>
+                <div class="health-status online">Online</div>
+              </div>
+              <div class="health-item">
+                <div class="health-label">
+                  <span>Armazenamento</span>
+                  <i class="fas fa-hdd"></i>
+                </div>
+                <div class="health-status online">85% em uso</div>
+              </div>
+              <div class="health-item">
+                <div class="health-label">
+                  <span>Performance</span>
+                  <i class="fas fa-tachometer-alt"></i>
+                </div>
+                <div class="health-status online">Ótima</div>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+
+      <!-- RESIDENTS PAGE -->
+      <div class="admin-page" id="page-residents">
+        <div class="container">
+          <div class="page-header">
+            <div>
+              <h2>Gestão de Residentes</h2>
+              <p>Todos os residentes cadastrados no sistema</p>
+            </div>
+            <button class="btn btn-primary" onclick="window.location.href='/html/resident-form.html'">
+              <i class="fas fa-plus"></i> Novo Residente
+            </button>
+          </div>
+
+          <div class="admin-section">
+            <div class="filters-bar">
+              <input type="text" placeholder="Buscar residente..." class="search-input">
+              <select class="filter-select">
+                <option value="">Filtrar por Status...</option>
+                <option value="active">Ativo</option>
+                <option value="inactive">Inativo</option>
+                <option value="discharged">Alta</option>
+              </select>
+            </div>
+            <div class="residents-table" id="adminResidentsTable">
+              <div class="empty-state">
+                <i class="fas fa-inbox"></i>
+                <p>Nenhum residente cadastrado</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- USERS PAGE -->
+      <div class="admin-page" id="page-users">
+        <div class="container">
+          <div class="page-header">
+            <div>
+              <h2>Gestão de Usuários</h2>
+              <p>Controle de acesso e permissões</p>
+            </div>
+            <button class="btn btn-primary">
+              <i class="fas fa-plus"></i> Novo Usuário
+            </button>
+          </div>
+
+          <div class="admin-section">
+            <div class="users-table">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Nome</th>
+                    <th>Email</th>
+                    <th>Perfil</th>
+                    <th>Unidade</th>
+                    <th>Status</th>
+                    <th>Ações</th>
+                  </tr>
+                </thead>
+                <tbody id="usersTableBody">
+                  <tr class="empty-row">
+                    <td colspan="6" class="empty-state">
+                      <i class="fas fa-inbox"></i>
+                      <p>Carregando usuários...</p>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PRICING PAGE -->
+      <div class="admin-page" id="page-pricing">
+        <div class="container">
+          <div class="page-header">
+            <div>
+              <h2>Preços & Pacotes</h2>
+              <p>Configuração de planos e custos</p>
+            </div>
+            <button class="btn btn-primary">
+              <i class="fas fa-plus"></i> Novo Pacote
+            </button>
+          </div>
+
+          <div class="admin-section">
+            <p style="text-align: center; color: var(--text-secondary); padding: var(--space-8);">
+              <i class="fas fa-cog"></i> Em desenvolvimento
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- UNITS PAGE -->
+      <div class="admin-page" id="page-units">
+        <div class="container">
+          <div class="page-header">
+            <div>
+              <h2>Unidades</h2>
+              <p>Gerenciar unidades/filiais</p>
+            </div>
+            <button class="btn btn-primary">
+              <i class="fas fa-plus"></i> Nova Unidade
+            </button>
+          </div>
+
+          <div class="admin-section">
+            <p style="text-align: center; color: var(--text-secondary); padding: var(--space-8);">
+              <i class="fas fa-cog"></i> Em desenvolvimento
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- REPORTS PAGE -->
+      <div class="admin-page" id="page-reports">
+        <div class="container">
+          <div class="page-header">
+            <div>
+              <h2>Relatórios</h2>
+              <p>Análise e exportação de dados</p>
+            </div>
+            <button class="btn btn-primary">
+              <i class="fas fa-download"></i> Exportar
+            </button>
+          </div>
+
+          <div class="admin-section">
+            <p style="text-align: center; color: var(--text-secondary); padding: var(--space-8);">
+              <i class="fas fa-cog"></i> Em desenvolvimento
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- AUDIT LOG PAGE -->
+      <div class="admin-page" id="page-audit-log">
+        <div class="container">
+          <div class="page-header">
+            <div>
+              <h2>Audit Trail</h2>
+              <p>Histórico completo de ações do sistema</p>
+            </div>
+            <button class="btn btn-secondary">
+              <i class="fas fa-download"></i> Exportar Log
+            </button>
+          </div>
+
+          <div class="admin-section">
+            <p style="text-align: center; color: var(--text-secondary); padding: var(--space-8);">
+              <i class="fas fa-cog"></i> Em desenvolvimento
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="/js/admin-dashboard.js"></script>
+</body>
+</html>
