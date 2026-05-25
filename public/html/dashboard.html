@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - VIVARIS CARE</title>
+  <link rel="stylesheet" href="/css/design-system.css">
+  <link rel="stylesheet" href="/css/dashboard.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="dashboard-body">
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="logo-small"><i class="fas fa-heart-pulse"></i></div>
+      <h2>VIVARIS</h2>
+      <button class="sidebar-toggle" id="sidebarToggle"><i class="fas fa-bars"></i></button>
+    </div>
+    <nav class="sidebar-nav">
+      <a href="#" class="nav-item active" data-page="home"><i class="fas fa-home"></i><span>Dashboard</span></a>
+      <a href="#" class="nav-item" data-page="residents"><i class="fas fa-users"></i><span>Residentes</span></a>
+      <a href="#" class="nav-item" data-page="medications"><i class="fas fa-pills"></i><span>Medicações</span></a>
+      <a href="#" class="nav-item" data-page="scales"><i class="fas fa-chart-line"></i><span>Escalas</span></a>
+      <a href="#" class="nav-item" data-page="activities"><i class="fas fa-tasks"></i><span>Atividades</span></a>
+      <a href="#" class="nav-item" data-page="messages"><i class="fas fa-comments"></i><span>Chat</span><span class="badge-dot"></span></a>
+    </nav>
+    <div class="sidebar-footer">
+      <button class="nav-item logout-btn" id="logoutBtn"><i class="fas fa-sign-out-alt"></i><span>Sair</span></button>
+    </div>
+  </aside>
+  <main class="main-content">
+    <header class="top-bar">
+      <div class="top-bar-left"><h1 id="pageTitle">Dashboard</h1></div>
+      <div class="top-bar-right">
+        <button class="btn-icon notification-btn"><i class="fas fa-bell"></i><span class="badge">3</span></button>
+        <div class="user-profile">
+          <div class="avatar" id="userAvatar">A</div>
+          <div class="user-info">
+            <p id="userName">Admin Master</p>
+            <small id="userRole">Administrador</small>
+          </div>
+          <button class="btn-icon"><i class="fas fa-chevron-down"></i></button>
+        </div>
+      </div>
+    </header>
+    <div class="pages-container">
+      <div class="page" id="page-home">
+        <div class="container">
+          <div class="welcome-section">
+            <h2>Bem-vindo de volta!</h2>
+            <p id="welcomeMessage">Aqui está um resumo do que está acontecendo hoje</p>
+          </div>
+          <div class="metrics-row">
+            <div class="metric-card">
+              <div class="metric-header"><h3>Residentes</h3><i class="fas fa-users"></i></div>
+              <div class="metric-value" id="metricResidents">0</div>
+              <p class="metric-label">Ativos</p>
+            </div>
+            <div class="metric-card">
+              <div class="metric-header"><h3>Atividades</h3><i class="fas fa-tasks"></i></div>
+              <div class="metric-value" id="metricActivities">0</div>
+              <p class="metric-label">Hoje</p>
+            </div>
+            <div class="metric-card">
+              <div class="metric-header"><h3>Alertas</h3><i class="fas fa-exclamation-triangle"></i></div>
+              <div class="metric-value warning" id="metricAlerts">0</div>
+              <p class="metric-label">Pendentes</p>
+            </div>
+            <div class="metric-card">
+              <div class="metric-header"><h3>Taxa</h3><i class="fas fa-chart-pie"></i></div>
+              <div class="metric-value success" id="metricCompliance">0%</div>
+              <p class="metric-label">Conformidade</p>
+            </div>
+          </div>
+          <div class="content-grid">
+            <section class="section">
+              <div class="section-header"><h3>Residentes Recentes</h3><a href="#" class="link-more">Ver todos →</a></div>
+              <div class="residents-list" id="residentsList"><div class="empty-state"><i class="fas fa-inbox"></i><p>Nenhum residente cadastrado</p></div></div>
+            </section>
+            <section class="section">
+              <div class="section-header"><h3>Ações Rápidas</h3></div>
+              <div class="actions-grid">
+                <button class="action-card"><i class="fas fa-user-plus"></i><span>Novo Residente</span></button>
+                <button class="action-card"><i class="fas fa-pill"></i><span>Registrar Medicação</span></button>
+                <button class="action-card"><i class="fas fa-heartbeat"></i><span>Avaliar Escala</span></button>
+                <button class="action-card"><i class="fas fa-photo-video"></i><span>Atividade Diária</span></button>
+              </div>
+            </section>
+          </div>
+          <section class="section mt-8">
+            <div class="section-header"><h3>Timeline de Atividades</h3></div>
+            <div class="timeline" id="timeline"><div class="empty-state"><i class="fas fa-history"></i><p>Nenhuma atividade registrada</p></div></div>
+          </section>
+        </div>
+      </div>
+      <div class="page" id="page-residents" style="display: none;">
+        <div class="container">
+          <div class="page-header"><div><h2>Residentes</h2><p>Gerenciamento de residentes e prontuários</p></div><button class="btn btn-primary"><i class="fas fa-plus"></i> Novo Residente</button></div>
+          <div class="section"><div class="section-header"><h3>Lista de Residentes</h3><input type="text" placeholder="Buscar residente..." class="search-input"></div><div class="residents-table" id="residentsTable"><div class="empty-state"><i class="fas fa-inbox"></i><p>Nenhum residente encontrado</p></div></div></div>
+        </div>
+      </div>
+      <div class="page" id="page-medications" style="display: none;">
+        <div class="container">
+          <div class="page-header"><div><h2>Medicações</h2><p>Controle de medicações e prescrições</p></div></div>
+          <div class="section"><div class="section-header"><h3>Medicações Ativas</h3></div><div class="medications-list" id="medicationsList"><div class="empty-state"><i class="fas fa-inbox"></i><p>Nenhuma medicação cadastrada</p></div></div></div>
+        </div>
+      </div>
+      <div class="page" id="page-scales" style="display: none;">
+        <div class="container">
+          <div class="page-header"><div><h2>Escalas Geriátricas</h2><p>Avaliações de risco (Morse, Braden, Katz)</p></div></div>
+          <div class="section"><div class="section-header"><h3>Últimas Avaliações</h3></div><div class="scales-list" id="scalesList"><div class="empty-state"><i class="fas fa-inbox"></i><p>Nenhuma escala avaliada</p></div></div></div>
+        </div>
+      </div>
+      <div class="page" id="page-activities" style="display: none;">
+        <div class="container">
+          <div class="page-header"><div><h2>Atividades</h2><p>Registro de atividades diárias</p></div></div>
+          <div class="section"><div class="section-header"><h3>Atividades do Dia</h3></div><div class="activities-list" id="activitiesList"><div class="empty-state"><i class="fas fa-inbox"></i><p>Nenhuma atividade registrada</p></div></div></div>
+        </div>
+      </div>
+      <div class="page" id="page-messages" style="display: none;">
+        <div class="container">
+          <div class="page-header"><div><h2>Chat</h2><p>Comunicação em tempo real</p></div></div>
+          <div class="chat-container"><div class="chat-messages" id="chatMessages"><div class="empty-state"><i class="fas fa-comments"></i><p>Nenhuma mensagem</p></div></div><div class="chat-input"><input type="text" placeholder="Digite uma mensagem..."><button class="btn-icon"><i class="fas fa-paper-plane"></i></button></div></div>
+        </div>
+      </div>
+    </div>
+  </main>
+  <script src="/js/dashboard.js"></script>
+</body>
+</html>

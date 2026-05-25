@@ -3,59 +3,76 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>VIVARIS CARE</title>
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { 
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .container {
-      background: white;
-      padding: 40px;
-      border-radius: 10px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-      text-align: center;
-      max-width: 400px;
-    }
-    h1 { color: #667eea; margin-bottom: 10px; }
-    .status { color: #28a745; font-size: 14px; margin: 20px 0; }
-    .loading { color: #666; font-size: 12px; }
-  </style>
+  <title>VIVARIS CARE - Login</title>
+  <link rel="stylesheet" href="/css/design-system.css">
+  <link rel="stylesheet" href="/css/login.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body>
-  <div class="container">
-    <h1>🏥 VIVARIS CARE</h1>
-    <p>Plataforma para ILPIs</p>
-    <div class="status" id="status">Conectando...</div>
-    <div class="loading">Versão 1.0.0</div>
+<body class="login-body">
+  <div class="login-container">
+    <div class="login-brand">
+      <div class="brand-content">
+        <div class="logo"><i class="fas fa-heart-pulse"></i></div>
+        <h1>VIVARIS CARE</h1>
+        <p class="brand-subtitle">Plataforma integrada de cuidados para idosos</p>
+        <div class="brand-features">
+          <div class="feature"><i class="fas fa-chart-line"></i><span>Prontuário Eletrônico</span></div>
+          <div class="feature"><i class="fas fa-comments"></i><span>Comunicação em Tempo Real</span></div>
+          <div class="feature"><i class="fas fa-heartbeat"></i><span>Escalas Geriátricas</span></div>
+          <div class="feature"><i class="fas fa-file-contract"></i><span>Gestão Simplificada</span></div>
+        </div>
+        <div class="brand-quote">"Cuidado de qualidade começa com informação de qualidade"</div>
+      </div>
+    </div>
+    <div class="login-form-wrapper">
+      <div class="login-form">
+        <div class="form-header">
+          <h2>Bem-vindo de volta</h2>
+          <p>Entre com suas credenciais para acessar o sistema</p>
+        </div>
+        <form id="loginForm">
+          <div class="form-group">
+            <label for="email" class="form-label">E-mail</label>
+            <div class="input-wrapper">
+              <i class="fas fa-envelope"></i>
+              <input type="email" id="email" name="email" placeholder="seu@email.com" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="pin" class="form-label">PIN de Acesso</label>
+            <div class="input-wrapper">
+              <i class="fas fa-lock"></i>
+              <input type="password" id="pin" name="pin" placeholder="••••" maxlength="4" required>
+            </div>
+            <small class="form-hint">4 dígitos numéricos</small>
+          </div>
+          <div class="form-group checkbox">
+            <label><input type="checkbox" id="rememberMe" name="rememberMe"><span>Manter-me conectado</span></label>
+          </div>
+          <div id="errorMessage" class="alert alert-error hidden">
+            <i class="fas fa-exclamation-circle"></i><span id="errorText"></span>
+          </div>
+          <div id="loadingState" class="loading-state hidden">
+            <div class="spinner"></div><span>Autenticando...</span>
+          </div>
+          <button type="submit" class="btn btn-primary btn-lg btn-full login-submit" id="submitBtn">
+            <span id="submitText">Entrar no Sistema</span><i class="fas fa-arrow-right"></i>
+          </button>
+        </form>
+        <div class="demo-section">
+          <p class="demo-title">Credenciais de Demo</p>
+          <div class="demo-cards">
+            <div class="demo-card"><strong>Admin</strong><small>admin@vivaris.test</small><small>PIN: 1234</small></div>
+            <div class="demo-card"><strong>Assistencial</strong><small>maria@vivaris.test</small><small>PIN: 5678</small></div>
+          </div>
+        </div>
+        <div class="login-footer">
+          <p>© 2026 VIVARIS CARE. Todos os direitos reservados.</p>
+          <p class="text-muted">Plataforma segura com criptografia end-to-end</p>
+        </div>
+      </div>
+    </div>
   </div>
-
-  <script src="/socket.io/socket.io.js"></script>
-  <script>
-    const socket = io();
-    
-    socket.on('connect', () => {
-      document.getElementById('status').textContent = '✅ Conectado ao servidor';
-      document.getElementById('status').style.color = '#28a745';
-    });
-
-    socket.on('disconnect', () => {
-      document.getElementById('status').textContent = '❌ Desconectado do servidor';
-      document.getElementById('status').style.color = '#dc3545';
-    });
-
-    // Teste de health check
-    fetch('/api/health')
-      .then(r => r.json())
-      .then(data => {
-        console.log('✅ API Health:', data);
-      })
-      .catch(e => console.error('❌ Erro:', e));
-  </script>
+  <script src="/js/auth.js"></script>
 </body>
 </html>
