@@ -1,91 +1,112 @@
-const API_BASE = window.location.hostname === 'localhost' ? 'http://localhost:3000/api' : 'https://vivaris-care-production.up.railway.app/api';
+// ============================================
+// AUTH - Login com redirecionamento por perfil
+// ============================================
 
-class AuthManager {
-  constructor() {
-    this.token = localStorage.getItem('token');
-    this.user = JSON.parse(localStorage.getItem('user') || 'null');
-    this.init();
+const API_URL = window.location.hostname === 'localhost'
+  ? 'http://localhost:3000/api'
+  : `${window.location.protocol}//${window.location.hostname}/api`;
+
+// INIT
+document.addEventListener('DOMContentLoaded', () => {
+  const loginForm = document.getElementById('loginForm');
+  if (loginForm) {
+    loginForm.addEventListener('submit', handleLogin);
+  }
+});
+
+// LOGIN
+async function handleLogin(e) {
+  e.preventDefault();
+
+  const email = document.getElementById('email').value;
+  const pin = document.getElementById('pin').value;
+
+  if (!email || !pin) {
+    showError('Email e PIN são obrigatórios!');
+    return;
   }
 
-  init() {
-    const form = document.getElementById('loginForm');
-    if (form) form.addEventListener('submit', (e) => this.handleLogin(e));
-    const demoCards = document.querySelectorAll('.demo-card');
-    demoCards.forEach(card => card.addEventListener('click', () => this.populateDemoCredentials(card)));
-    if (this.token && this.user) this.redirectToDashboard();
-  }
+  showLoading(true);
 
-  handleLogin = async (e) => {
-    e.preventDefault();
-    const email = document.getElementById('email').value;
-    const pin = document.getElementById('pin').value;
-    this.showLoading();
-    this.hideError();
-    try {
-      const response = await fetch(`${API_BASE}/auth/login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, pin })
-      });
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.error || 'Erro ao fazer login');
-      localStorage.setItem('token', data.token);
-      localStorage.setItem('user', JSON.stringify(data.user));
-      this.token = data.token;
-      this.user = data.user;
-      setTimeout(() => this.redirectToDashboard(), 500);
-    } catch (error) {
-      console.error('Login error:', error);
-      this.showError(error.message);
-    } finally {
-      this.hideLoading();
+  try {
+    const response = await fetch(`${API_URL}/auth/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, pin })
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      showError(data.error || 'Erro ao fazer login');
+      showLoading(false);
+      return;
     }
-  }
 
-  showLoading() {
-    document.getElementById('loadingState').classList.remove('hidden');
-    document.getElementById('submitBtn').disabled = true;
-    document.getElementById('submitText').textContent = 'Autenticando...';
-  }
+    // Salvar no localStorage
+    localStorage.setItem('token', data.token);
+    localStorage.setItem('user', JSON.stringify(data.user));
 
-  hideLoading() {
-    document.getElementById('loadingState').classList.add('hidden');
-    document.getElementById('submitBtn').disabled = false;
-    document.getElementById('submitText').textContent = 'Entrar no Sistema';
-  }
+    // REDIRECIONAR por perfil
+    const role = data.user.role;
+    let dashboardUrl = '/html/dashboard.html';
 
-  showError(message) {
-    const errorDiv = document.getElementById('errorMessage');
-    document.getElementById('errorText').textContent = message;
-    errorDiv.classList.remove('hidden');
-  }
-
-  hideError() {
-    document.getElementById('errorMessage').classList.add('hidden');
-  }
-
-  populateDemoCredentials(card) {
-    const text = card.innerText;
-    const lines = text.split('\n');
-    if (lines[1]) document.getElementById('email').value = lines[1].trim();
-    if (lines[2]) {
-      const pin = lines[2].trim().replace('PIN: ', '');
-      document.getElementById('pin').value = pin;
+    switch(role) {
+      case 'admin':
+        dashboardUrl = '/html/admin-dashboard.html';
+        break;
+      case 'comercial':
+        dashboardUrl = '/html/comercial-dashboard.html';
+        break;
+      case 'assistencial':
+        dashboardUrl = '/html/assistencial-dashboard.html';
+        break;
+      case 'familiar':
+        dashboardUrl = '/html/familiar-dashboard.html';
+        break;
     }
-    document.getElementById('pin').focus();
-  }
 
-  redirectToDashboard() {
-    window.location.href = '/html/dashboard.html';
-  }
+    window.location.href = dashboardUrl;
 
-  logout() {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    window.location.href = '/';
+  } catch (error) {
+    console.error('Erro:', error);
+    showError('Erro ao conectar com servidor');
+    showLoading(false);
   }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-  new AuthManager();
-});
+// HELPERS
+function showError(message) {
+  const errorDiv = document.getElementById('errorMessage');
+  const errorText = document.getElementById('errorText');
+  errorText.textContent = message;
+  errorDiv.classList.remove('hidden');
+}
+
+function showLoading(show) {
+  const loading = document.getElementById('loadingState');
+  const button = document.getElementById('submitBtn');
+  
+  if (show) {
+    loading.classList.remove('hidden');
+    button.disabled = true;
+  } else {
+    loading.classList.add('hidden');
+    button.disabled = false;
+  }
+}
+
+// LOGOUT
+function logout() {
+  localStorage.removeItem('token');
+  localStorage.removeItem('user');
+  window.location.href = '/';
+}
+
+// VERIFICAR se está autenticado
+function checkAuth() {
+  const token = localStorage.getItem('token');
+  if (!token) {
+    window.location.href = '/';
+  }
+}

@@ -9,6 +9,8 @@ const authRoutes = require('./routes/auth');
 const residentsRoutes = require('./routes/residents');
 const medicationsRoutes = require('./routes/medications');
 const scalesRoutes = require('./routes/scales');
+const activitiesRoutes = require('./routes/activities');
+const messagesRoutes = require('./routes/messages');
 const { authenticate } = require('./middleware/auth');
 
 const app = express();
@@ -27,6 +29,8 @@ app.use('/api/auth', authRoutes);
 app.use('/api/residents', residentsRoutes);
 app.use('/api/medications', medicationsRoutes);
 app.use('/api/scales', scalesRoutes);
+app.use('/api/activities', activitiesRoutes);
+app.use('/api/messages', messagesRoutes);
 
 app.get('/api/me', authenticate, (req, res) => {
   res.json({ message: `Bem-vindo, ${req.user.full_name}!`, user: req.user });
