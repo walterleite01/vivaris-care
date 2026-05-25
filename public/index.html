@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VIVARIS CARE</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { 
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .container {
+      background: white;
+      padding: 40px;
+      border-radius: 10px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      text-align: center;
+      max-width: 400px;
+    }
+    h1 { color: #667eea; margin-bottom: 10px; }
+    .status { color: #28a745; font-size: 14px; margin: 20px 0; }
+    .loading { color: #666; font-size: 12px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🏥 VIVARIS CARE</h1>
+    <p>Plataforma para ILPIs</p>
+    <div class="status" id="status">Conectando...</div>
+    <div class="loading">Versão 1.0.0</div>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+    
+    socket.on('connect', () => {
+      document.getElementById('status').textContent = '✅ Conectado ao servidor';
+      document.getElementById('status').style.color = '#28a745';
+    });
+
+    socket.on('disconnect', () => {
+      document.getElementById('status').textContent = '❌ Desconectado do servidor';
+      document.getElementById('status').style.color = '#dc3545';
+    });
+
+    // Teste de health check
+    fetch('/api/health')
+      .then(r => r.json())
+      .then(data => {
+        console.log('✅ API Health:', data);
+      })
+      .catch(e => console.error('❌ Erro:', e));
+  </script>
+</body>
+</html>
