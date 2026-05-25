@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cadastro de Residente - VIVARIS CARE</title>
+  <link rel="stylesheet" href="/css/design-system.css">
+  <link rel="stylesheet" href="/css/resident-form.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="form-body">
+  <div class="form-container">
+    <!-- HEADER -->
+    <header class="form-header">
+      <div class="header-content">
+        <h1><i class="fas fa-user-plus"></i> Cadastro de Residente</h1>
+        <p>Preencha as 17 abas com atenção. Os cálculos são automáticos.</p>
+      </div>
+      <button class="btn-back" onclick="goBack()">
+        <i class="fas fa-arrow-left"></i> Voltar
+      </button>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <div class="form-wrapper">
+      <!-- LEFT: TABS -->
+      <aside class="tabs-sidebar">
+        <div class="tabs-list">
+          <button class="tab-btn active" data-tab="01-identification">
+            <span class="tab-number">01</span>
+            <span class="tab-label">Identificação</span>
+            <span class="tab-status"><i class="fas fa-circle-check"></i></span>
+          </button>
+          <button class="tab-btn" data-tab="02-birth">
+            <span class="tab-number">02</span>
+            <span class="tab-label">Nascimento</span>
+          </button>
+          <button class="tab-btn" data-tab="03-contact">
+            <span class="tab-number">03</span>
+            <span class="tab-label">Contato</span>
+          </button>
+          <button class="tab-btn" data-tab="04-responsible">
+            <span class="tab-number">04</span>
+            <span class="tab-label">Responsável</span>
+          </button>
+          <button class="tab-btn" data-tab="05-health-plan">
+            <span class="tab-number">05</span>
+            <span class="tab-label">Plano de Saúde</span>
+          </button>
+          <button class="tab-btn" data-tab="06-medical-history">
+            <span class="tab-number">06</span>
+            <span class="tab-label">Histórico Médico</span>
+          </button>
+          <button class="tab-btn" data-tab="07-medications">
+            <span class="tab-number">07</span>
+            <span class="tab-label">Medicações</span>
+          </button>
+          <button class="tab-btn" data-tab="08-allergies">
+            <span class="tab-number">08</span>
+            <span class="tab-label">Alergias</span>
+          </button>
+          <button class="tab-btn" data-tab="09-physical">
+            <span class="tab-number">09</span>
+            <span class="tab-label">Dados Físicos</span>
+          </button>
+          <button class="tab-btn" data-tab="10-functional">
+            <span class="tab-number">10</span>
+            <span class="tab-label">Capacidade Funcional</span>
+          </button>
+          <button class="tab-btn" data-tab="11-mobility">
+            <span class="tab-number">11</span>
+            <span class="tab-label">Mobilidade</span>
+          </button>
+          <button class="tab-btn" data-tab="12-cognitive">
+            <span class="tab-number">12</span>
+            <span class="tab-label">Função Cognitiva</span>
+          </button>
+          <button class="tab-btn" data-tab="13-habits">
+            <span class="tab-number">13</span>
+            <span class="tab-label">Hábitos</span>
+          </button>
+          <button class="tab-btn" data-tab="14-nutrition">
+            <span class="tab-number">14</span>
+            <span class="tab-label">Nutrição</span>
+          </button>
+          <button class="tab-btn" data-tab="15-vaccination">
+            <span class="tab-number">15</span>
+            <span class="tab-label">Vacinação</span>
+          </button>
+          <button class="tab-btn" data-tab="16-observation">
+            <span class="tab-number">16</span>
+            <span class="tab-label">Observações</span>
+          </button>
+          <button class="tab-btn" data-tab="17-review">
+            <span class="tab-number">17</span>
+            <span class="tab-label">Revisão & Custo</span>
+          </button>
+        </div>
+
+        <!-- PROGRESS -->
+        <div class="sidebar-progress">
+          <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+          </div>
+          <p class="progress-text"><span id="progressPercent">0</span>% Completo</p>
+        </div>
+      </aside>
+
+      <!-- RIGHT: FORM CONTENT -->
+      <main class="form-content">
+        <form id="residentForm">
+          <!-- TAB 01: IDENTIFICATION -->
+          <div class="form-tab active" id="tab-01-identification">
+            <div class="tab-header">
+              <h2>01. Identificação Pessoal</h2>
+              <p>Dados básicos do residente</p>
+            </div>
+            <div class="form-grid">
+              <div class="form-group full">
+                <label>Nome Completo *</label>
+                <input type="text" id="full_name" placeholder="Digite o nome completo" required>
+              </div>
+              <div class="form-group">
+                <label>CPF *</label>
+                <input type="text" id="cpf" placeholder="000.000.000-00" required>
+              </div>
+              <div class="form-group">
+                <label>RG *</label>
+                <input type="text" id="rg" placeholder="Digite o RG">
+              </div>
+              <div class="form-group">
+                <label>Gênero *</label>
+                <select id="gender" required>
+                  <option value="">Selecione...</option>
+                  <option value="M">Masculino</option>
+                  <option value="F">Feminino</option>
+                </select>
+              </div>
+              <div class="form-group full">
+                <label>Naturalidade</label>
+                <input type="text" id="naturalidade" placeholder="Cidade/Estado">
+              </div>
+            </div>
+          </div>
+
+          <!-- TAB 02: BIRTH -->
+          <div class="form-tab" id="tab-02-birth">
+            <div class="tab-header">
+              <h2>02. Data de Nascimento</h2>
+              <p>Informações de idade e data</p>
+            </div>
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Data de Nascimento *</label>
+                <input type="date" id="birth_date" required onchange="calculateAge()">
+              </div>
+              <div class="form-group">
+                <label>Idade (Automática)</label>
+                <input type="number" id="age" readonly placeholder="Calculada automaticamente">
+              </div>
+            </div>
+          </div>
+
+          <!-- TAB 03: CONTACT -->
+          <div class="form-tab" id="tab-03-contact">
+            <div class="tab-header">
+              <h2>03. Contato</h2>
+              <p>Telefones e endereço</p>
+            </div>
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Telefone Principal</label>
+                <input type="tel" id="phone_main" placeholder="(00) 00000-0000">
+              </div>
+              <div class="form-group">
+                <label>Telefone Secundário</label>
+                <input type="tel" id="phone_secondary" placeholder="(00) 00000-0000">
+              </div>
+              <div class="form-group full">
+                <label>Endereço</label>
+                <input type="text" id="address" placeholder="Rua, número, bairro">
+              </div>
+              <div class="form-group">
+                <label>Cidade</label>
+                <input type="text" id="city" placeholder="Cidade">
+              </div>
+              <div class="form-group">
+                <label>Estado</label>
+                <input type="text" id="state" placeholder="UF">
+              </div>
+              <div class="form-group">
+                <label>CEP</label>
+                <input type="text" id="cep" placeholder="00000-000">
+              </div>
+            </div>
+          </div>
+
+          <!-- TAB 04: RESPONSIBLE -->
+          <div class="form-tab" id="tab-04-responsible">
+            <div class="tab-header">
+              <h2>04. Responsável Legal</h2>
+              <p>Contato de emergência</p>
+            </div>
+            <div class="form-grid">
+              <div class="form-group full">
+                <label>Nome do Responsável *</label>
+                <input type="text" id="responsible_name" placeholder="Nome completo" required>
+              </div>
+              <div class="form-group">
+                <label>Grau de Parentesco</label>
+                <input type="text" id="responsible_relationship" placeholder="Filho, cônjuge, etc">
+              </div>
+              <div class="form-group">
+                <label>Telefone do Responsável *</label>
+                <input type="tel" id="responsible_phone" placeholder="(00) 00000-0000" required>
+              </div>
+              <div class="form-group full">
+                <label>Email do Responsável</label>
+                <input type="email" id="responsible_email" placeholder="email@exemplo.com">
+              </div>
+            </div>
+          </div>
+
+          <!-- TAB 05: HEALTH PLAN -->
+          <div class="form-tab" id="tab-05-health-plan">
+            <div class="tab-header">
+              <h2>05. Plano de Saúde</h2>
+              <p>Informações de cobertura</p>
+            </div>
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Tipo de Cobertura</label>
+                <select id="coverage_type">
+                  <option value="">Selecione...</option>
+                  <option value="particular">Particular</option>
+                  <option value="sus">SUS</option>
+                  <option value="convenio">Convênio</option>
+                  <option value="misto">Misto</option>
+                </select>
+              </div>
+              <div class="form-group full">
+                <label>Nome do Convênio/Plano</label>
+                <input type="text" id="health_plan_name" placeholder="Ex: Unimed, Bradesco Saúde, etc">
+              </div>
+              <div class="form-group">
+                <label>Número da Carteirinha</label>
+                <input type="text" id="health_plan_number" placeholder="Número da carteirinha">
+              </div>
+            </div>
+          </div>
+
+          <!-- TAB 06: MEDICAL HISTORY -->
+          <div class="form-tab" id="tab-06-medical-history">
+            <div class="tab-header">
+              <h2>06. Histórico Médico</h2>
+              <p>Diagnósticos e condições</p>
+            </div>
+            <div class="form-grid">
+              <div class="form-group full">
+                <label>Diagnósticos Principais (separe por vírgula)</label>
+                <textarea id="diagnoses" placeholder="Ex: Hipertensão, Diabetes tipo 2, Osteoporose"></textarea>
+              </div>
+              <div class="form-group full">
+                <label>Cirurgias Anteriores</label>
+                <textarea id="surgeries" placeholder="Descreva cirurgias, datas se possível"></textarea>
+              </div>
+              <div class="form-group full">
+                <label>Doenças Crônicas</label>
+                <textarea id="chronic_diseases" placeholder="Doenças crônicas existentes"></textarea>
+              </div>
+            </div>
+          </div>
+
+          <!-- TAB 07: MEDICATIONS -->
+          <div class="form-tab" id="tab-07-medications">
+            <div class="tab-header">
+              <h2>07. Medicações em Uso</h2>
+              <p>Medicamentos contínuos</p>
+            </div>
+            <div class="form-grid">
+              <div class="form-group full">
+                <label>Medicações em Uso (uma por linha)</label>
+                <textarea id="medications" placeholder="Nome do medicamento, dose, frequência&#10;Ex: Losartana 50mg - 1x ao dia&#10;Metformina 500mg - 2x ao dia"></textarea>
+              </div>
+            </div>
+          </div>
+
+          <!-- TAB 08: ALLERGIES -->
+          <div class="form-tab" id="tab-08-allergies">
+            <div class="tab-header">
+              <h2>08. Alergias</h2>
+              <p>Alergias conhecidas</p>
+            </div>
+            <div class="form-grid">
+              <div class="form-group full">
+                <label>Alergias Medicamentosas</label>
+                <textarea id="allergies_medications" placeholder="Ex: Penicilina, Sulfonamidas"></textarea>
+              </div>
+              <div class="form-group full">
+                <label>Alergias Alimentares</label>
+                <textarea id="allergies_food" placeholder="Ex: Frutos do mar, amendoim, leite"></textarea>
+              </div>
+              <div class="form-group full">
+                <label>Outras Alergias</label>
+                <textarea id="allergies_other" placeholder="Outras alergias conhecidas"></textarea>
+              </div>
+            </div>
+          </div>
+
+          <!-- TAB 09: PHYSICAL -->
+          <div class="form-tab" id="tab-09-physical">
+            <div class="tab-header">
+              <h2>09. Dados Físicos</h2>
+              <p>Medidas antropométricas</p>
+            </div>
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Peso (kg) *</label>
+                <input type="number" id="weight" step="0.1" placeholder="Ex: 75.5" required onchange="calculateBMI()">
+              </div>
+              <div class="form-group">
+                <label>Altura (cm) *</label>
+                <input type="number" id="height" placeholder="Ex: 170" required onchange="calculateBMI()">
+              </div>
+              <div class="form-group">
+                <label>IMC (Automático)</label>
+                <input type="number" id="imc" step="0.1" readonly placeholder="Calculado automaticamente">
+              </div>
+              <div class="form-group">
+                <label>Tipo de Cabelo</label>
+                <input type="text" id="hair_type" placeholder="Ex: Branco, grisalho, castanho">
+              </div>
+              <div class="form-group">
+                <label>Cor dos Olhos</label>
+                <input type="text" id="eye_color" placeholder="Ex: Azul, castanho, verde">
+              </div>
+              <div class="form-group">
+                <label>Sinais Distintivos</label>
+                <input type="text" id="distinctive_marks" placeholder="Cicatrizes, tatuagens, etc">
+              </div>
+            </div>
+          </div>
+
+          <!-- TAB 10: FUNCTIONAL -->
+          <div class="form-tab" id="tab-10-functional">
+            <div class="tab-header">
+              <h2>10. Capacidade Funcional</h2>
+              <p>Avaliação de independência (Katz)</p>
+            </div>
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Banho *</label>
+                <select id="katz_bath" required onchange="calculateKatz()">
+                  <option value="">Selecione...</option>
+                  <option value="1">Independente</option>
+                  <option value="0">Dependente</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Vestiário *</label>
+                <select id="katz_dress" required onchange="calculateKatz()">
+                  <option value="">Selecione...</option>
+                  <option value="1">Independente</option>
+                  <option value="0">Dependente</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Higiene Pessoal *</label>
+                <select id="katz_hygiene" required onchange="calculateKatz()">
+                  <option value="">Selecione...</option>
+                  <option value="1">Independente</option>
+                  <option value="0">Dependente</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Continência *</label>
+                <select id="katz_continence" required onchange="calculateKatz()">
+                  <option value="">Selecione...</option>
+                  <option value="1">Independente</option>
+                  <option value="0">Dependente</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Alimentação *</label>
+                <select id="katz_feeding" required onchange="calculateKatz()">
+                  <option value="">Selecione...</option>
+                  <option value="1">Independente</option>
+                  <option value="0">Dependente</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Transferência *</label>
+                <select id="katz_transfer" required onchange="calculateKatz()">
+                  <option value="">Selecione...</option>
+                  <option value="1">Independente</option>
+                  <option value="0">Dependente</option>
+                </select>
+              </div>
+            </div>
+            <div class="katz-result">
+              <p>Escala de Katz: <strong id="katzScore">-</strong> / 6</p>
+              <p id="katzLevel" class="result-level"></p>
+            </div>
+          </div>
+
+          <!-- TAB 11: MOBILITY -->
+          <div class="form-tab" id="tab-11-mobility">
+            <div class="tab-header">
+              <h2>11. Mobilidade (Escala de Morse)</h2>
+              <p>Avaliação de risco de queda</p>
+            </div>
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Histórico de Queda *</label>
+                <select id="morse_history" required onchange="calculateMorse()">
+                  <option value="">Selecione...</option>
+                  <option value="0">Não</option>
+                  <option value="25">Sim</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Segundo Diagnóstico *</label>
+                <select id="morse_diagnosis" required onchange="calculateMorse()">
+                  <option value="">Selecione...</option>
+                  <option value="0">Não</option>
+                  <option value="15">Sim</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Medicamentos *</label>
+                <select id="morse_medications" required onchange="calculateMorse()">
+                  <option value="">Selecione...</option>
+                  <option value="0">Nenhum</option>
+                  <option value="10">1 medicamento</option>
+                  <option value="20">2 ou mais medicamentos</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Dispositivos de Marcha *</label>
+                <select id="morse_device" required onchange="calculateMorse()">
+                  <option value="">Selecione...</option>
+                  <option value="0">Nenhum / Acamado</option>
+                  <option value="15">Muleta / Bengala</option>
+                  <option value="30">Andador / Cadeira de rodas</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Marcha *</label>
+                <select id="morse_gait" required onchange="calculateMorse()">
+                  <option value="">Selecione...</option>
+                  <option value="0">Normal / Acamado</option>
+                  <option value="10">Fraca</option>
+                  <option value="20">Prejudicada</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Estado Mental *</label>
+                <select id="morse_mental" required onchange="calculateMorse()">
+                  <option value="">Selecione...</option>
+                  <option value="0">Orientado</option>
+                  <option value="15">Confuso</option>
+                </select>
+              </div>
+            </div>
+            <div class="morse-result">
+              <p>Escala de Morse: <strong id="morseScore">-</strong> / 100</p>
+              <p id="morseLevel" class="result-level"></p>
+            </div>
+          </div>
+
+          <!-- TAB 12: COGNITIVE -->
+          <div class="form-tab" id="tab-12-cognitive">
+            <div class="tab-header">
+              <h2>12. Função Cognitiva (Escala de Braden)</h2>
+              <p>Avaliação de risco de úlcera por pressão</p>
+            </div>
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Percepção Sensorial *</label>
+                <select id="braden_perception" required onchange="calculateBraden()">
+                  <option value="">Selecione...</option>
+                  <option value="4">Totalmente limitada</option>
+                  <option value="3">Muito limitada</option>
+                  <option value="2">Levemente limitada</option>
+                  <option value="1">Sem limitação aparente</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Umidade *</label>
+                <select id="braden_moisture" required onchange="calculateBraden()">
+                  <option value="">Selecione...</option>
+                  <option value="4">Constantemente úmida</option>
+                  <option value="3">Frequentemente úmida</option>
+                  <option value="2">Ocasionalmente úmida</option>
+                  <option value="1">Raramente úmida</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Atividade *</label>
+                <select id="braden_activity" required onchange="calculateBraden()">
+                  <option value="">Selecione...</option>
+                  <option value="4">Acamado</option>
+                  <option value="3">Confinado à cadeira</option>
+                  <option value="2">Caminha ocasionalmente</option>
+                  <option value="1">Caminha frequentemente</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Mobilidade *</label>
+                <select id="braden_mobility" required onchange="calculateBraden()">
+                  <option value="">Selecione...</option>
+                  <option value="4">Totalmente imóvel</option>
+                  <option value="3">Muito limitada</option>
+                  <option value="2">Levemente limitada</option>
+                  <option value="1">Sem limitações</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Nutrição *</label>
+                <select id="braden_nutrition" required onchange="calculateBraden()">
+                  <option value="">Selecione...</option>
+                  <option value="4">Muito pobre</option>
+                  <option value="3">Provavelmente inadequada</option>
+                  <option value="2">Adequada</option>
+                  <option value="1">Excelente</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Fricção/Cisalhamento *</label>
+                <select id="braden_friction" required onchange="calculateBraden()">
+                  <option value="">Selecione...</option>
+                  <option value="3">Problema importante</option>
+                  <option value="2">Problema potencial</option>
+                  <option value="1">Nenhum problema aparente</option>
+                </select>
+              </div>
+            </div>
+            <div class="braden-result">
+              <p>Escala de Braden: <strong id="bradenScore">-</strong> / 23</p>
+              <p id="bradenLevel" class="result-level"></p>
+            </div>
+          </div>
+
+          <!-- TAB 13: HABITS -->
+          <div class="form-tab" id="tab-13-habits">
+            <div class="tab-header">
+              <h2>13. Hábitos Pessoais</h2>
+              <p>Tabagismo, álcool, etc</p>
+            </div>
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Tabagismo</label>
+                <select id="smoking">
+                  <option value="">Selecione...</option>
+                  <option value="never">Nunca fumou</option>
+                  <option value="former">Ex-fumante</option>
+                  <option value="current">Fumante ativo</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Consumo de Álcool</label>
+                <select id="alcohol">
+                  <option value="">Selecione...</option>
+                  <option value="never">Nunca</option>
+                  <option value="social">Social</option>
+                  <option value="regular">Regular</option>
+                </select>
+              </div>
+              <div class="form-group full">
+                <label>Atividades Recreativas</label>
+                <input type="text" id="recreational" placeholder="Hobbies, atividades que gosta">
+              </div>
+            </div>
+          </div>
+
+          <!-- TAB 14: NUTRITION -->
+          <div class="form-tab" id="tab-14-nutrition">
+            <div class="tab-header">
+              <h2>14. Nutrição e Dieta</h2>
+              <p>Restrições alimentares</p>
+            </div>
+            <div class="form-grid">
+              <div class="form-group full">
+                <label>Restrições Dietéticas</label>
+                <textarea id="diet_restrictions" placeholder="Ex: Sem sal, sem açúcar, sem glúten, líquida"></textarea>
+              </div>
+              <div class="form-group full">
+                <label>Preferências Alimentares</label>
+                <textarea id="food_preferences" placeholder="Alimentos que gosta ou não gosta"></textarea>
+              </div>
+              <div class="form-group">
+                <label>Dificuldade para Mastigar/Engolir</label>
+                <select id="swallowing_difficulty">
+                  <option value="">Selecione...</option>
+                  <option value="none">Nenhuma</option>
+                  <option value="mild">Leve</option>
+                  <option value="moderate">Moderada</option>
+                  <option value="severe">Grave</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- TAB 15: VACCINATION -->
+          <div class="form-tab" id="tab-15-vaccination">
+            <div class="tab-header">
+              <h2>15. Vacinação</h2>
+              <p>Histórico de vacinas</p>
+            </div>
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Influenza (Gripe) - Ano</label>
+                <input type="number" id="vaccine_flu" placeholder="2026" min="2000" max="2026">
+              </div>
+              <div class="form-group">
+                <label>Pneumococo - Ano</label>
+                <input type="number" id="vaccine_pneumo" placeholder="2026" min="2000" max="2026">
+              </div>
+              <div class="form-group">
+                <label>Tétano - Ano</label>
+                <input type="number" id="vaccine_tetanus" placeholder="2026" min="2000" max="2026">
+              </div>
+              <div class="form-group">
+                <label>COVID-19 (Última dose) - Ano</label>
+                <input type="number" id="vaccine_covid" placeholder="2026" min="2000" max="2026">
+              </div>
+              <div class="form-group full">
+                <label>Outras Vacinas</label>
+                <textarea id="other_vaccines" placeholder="Outras vacinas relevantes e datas"></textarea>
+              </div>
+            </div>
+          </div>
+
+          <!-- TAB 16: OBSERVATION -->
+          <div class="form-tab" id="tab-16-observation">
+            <div class="tab-header">
+              <h2>16. Observações Gerais</h2>
+              <p>Informações adicionais importantes</p>
+            </div>
+            <div class="form-grid">
+              <div class="form-group full">
+                <label>Observações Clínicas</label>
+                <textarea id="clinical_notes" placeholder="Qualquer informação clínica relevante não coberta nos campos anteriores"></textarea>
+              </div>
+              <div class="form-group full">
+                <label>Preferências de Cuidados</label>
+                <textarea id="care_preferences" placeholder="Como o residente prefere ser cuidado, temperamento, preferências pessoais"></textarea>
+              </div>
+              <div class="form-group full">
+                <label>Recomendações Especiais</label>
+                <textarea id="special_recommendations" placeholder="Orientações especiais para equipe de cuidados"></textarea>
+              </div>
+            </div>
+          </div>
+
+          <!-- TAB 17: REVIEW & COST -->
+          <div class="form-tab" id="tab-17-review">
+            <div class="tab-header">
+              <h2>17. Revisão & Custo</h2>
+              <p>Cálculos automáticos e geração de contrato</p>
+            </div>
+
+            <!-- RESUMO DE ESCALAS -->
+            <div class="scales-summary">
+              <h3>📊 Escalas Geriátricas</h3>
+              <div class="scales-grid">
+                <div class="scale-card morse">
+                  <div class="scale-label">Morse (Risco de Queda)</div>
+                  <div class="scale-value" id="review_morse">-</div>
+                  <div class="scale-risk" id="review_morse_level">-</div>
+                </div>
+                <div class="scale-card braden">
+                  <div class="scale-label">Braden (Úlcera por Pressão)</div>
+                  <div class="scale-value" id="review_braden">-</div>
+                  <div class="scale-risk" id="review_braden_level">-</div>
+                </div>
+                <div class="scale-card katz">
+                  <div class="scale-label">Katz (Independência)</div>
+                  <div class="scale-value" id="review_katz">-</div>
+                  <div class="scale-risk" id="review_katz_level">-</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- CÁLCULO DE CUSTOS -->
+            <div class="costs-summary">
+              <h3>💰 Cálculo de Custos</h3>
+              <div class="costs-grid">
+                <div class="cost-item">
+                  <label>Custo Base (Hospedagem Diária)</label>
+                  <input type="number" id="base_cost" step="0.01" placeholder="150.00" value="150" onchange="calculateTotalCost()">
+                  <span class="cost-unit">R$ / dia</span>
+                </div>
+                <div class="cost-item">
+                  <label>Custo por Nível de Dependência</label>
+                  <select id="dependency_level" onchange="calculateTotalCost()">
+                    <option value="0">Independente (+ 0%)</option>
+                    <option value="0.25">Leve (+ 25%)</option>
+                    <option value="0.50">Moderada (+ 50%)</option>
+                    <option value="1.00">Grave (+ 100%)</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="cost-result">
+                <div class="cost-line">
+                  <span>Custo Diário:</span>
+                  <strong id="daily_cost">R$ 0,00</strong>
+                </div>
+                <div class="cost-line">
+                  <span>Custo Mensal (30 dias):</span>
+                  <strong id="monthly_cost">R$ 0,00</strong>
+                </div>
+                <div class="cost-line highlight">
+                  <span>Custo Anual (365 dias):</span>
+                  <strong id="yearly_cost">R$ 0,00</strong>
+                </div>
+              </div>
+            </div>
+
+            <!-- AÇÕES FINAIS -->
+            <div class="final-actions">
+              <button type="button" class="btn btn-primary btn-lg" onclick="generateContract()">
+                <i class="fas fa-file-contract"></i> Gerar Contrato
+              </button>
+              <button type="submit" class="btn btn-success btn-lg">
+                <i class="fas fa-save"></i> Salvar Residente
+              </button>
+            </div>
+          </div>
+        </form>
+      </main>
+    </div>
+  </div>
+
+  <script src="/js/resident-form.js"></script>
+</body>
+</html>
