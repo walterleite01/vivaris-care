@@ -152,7 +152,7 @@
             <div class="form-grid">
               <div class="form-group">
                 <label>Data de Nascimento *</label>
-                <input type="date" id="birth_date" required>
+                <input type="date" id="birth_date" required onchange="calculateAge()">
               </div>
               <div class="form-group">
                 <label>Idade (Automática)</label>
@@ -316,11 +316,11 @@
             <div class="form-grid">
               <div class="form-group">
                 <label>Peso (kg) *</label>
-                <input type="number" id="weight" step="0.1" placeholder="Ex: 75.5" required>
+                <input type="number" id="weight" step="0.1" placeholder="Ex: 75.5" required onchange="calculateBMI()">
               </div>
               <div class="form-group">
                 <label>Altura (cm) *</label>
-                <input type="number" id="height" placeholder="Ex: 170" required>
+                <input type="number" id="height" placeholder="Ex: 170" required onchange="calculateBMI()">
               </div>
               <div class="form-group">
                 <label>IMC (Automático)</label>
@@ -350,7 +350,7 @@
             <div class="form-grid">
               <div class="form-group">
                 <label>Banho *</label>
-                <select id="katz_bath" required>
+                <select id="katz_bath" required onchange="calculateKatz()">
                   <option value="">Selecione...</option>
                   <option value="1">Independente</option>
                   <option value="0">Dependente</option>
@@ -358,7 +358,7 @@
               </div>
               <div class="form-group">
                 <label>Vestiário *</label>
-                <select id="katz_dress" required>
+                <select id="katz_dress" required onchange="calculateKatz()">
                   <option value="">Selecione...</option>
                   <option value="1">Independente</option>
                   <option value="0">Dependente</option>
@@ -366,7 +366,7 @@
               </div>
               <div class="form-group">
                 <label>Higiene Pessoal *</label>
-                <select id="katz_hygiene" required>
+                <select id="katz_hygiene" required onchange="calculateKatz()">
                   <option value="">Selecione...</option>
                   <option value="1">Independente</option>
                   <option value="0">Dependente</option>
@@ -374,7 +374,7 @@
               </div>
               <div class="form-group">
                 <label>Continência *</label>
-                <select id="katz_continence" required>
+                <select id="katz_continence" required onchange="calculateKatz()">
                   <option value="">Selecione...</option>
                   <option value="1">Independente</option>
                   <option value="0">Dependente</option>
@@ -382,7 +382,7 @@
               </div>
               <div class="form-group">
                 <label>Alimentação *</label>
-                <select id="katz_feeding" required>
+                <select id="katz_feeding" required onchange="calculateKatz()">
                   <option value="">Selecione...</option>
                   <option value="1">Independente</option>
                   <option value="0">Dependente</option>
@@ -390,7 +390,7 @@
               </div>
               <div class="form-group">
                 <label>Transferência *</label>
-                <select id="katz_transfer" required>
+                <select id="katz_transfer" required onchange="calculateKatz()">
                   <option value="">Selecione...</option>
                   <option value="1">Independente</option>
                   <option value="0">Dependente</option>
@@ -412,7 +412,7 @@
             <div class="form-grid">
               <div class="form-group">
                 <label>Histórico de Queda *</label>
-                <select id="morse_history" required>
+                <select id="morse_history" required onchange="calculateMorse()">
                   <option value="">Selecione...</option>
                   <option value="0">Não</option>
                   <option value="25">Sim</option>
@@ -420,7 +420,7 @@
               </div>
               <div class="form-group">
                 <label>Segundo Diagnóstico *</label>
-                <select id="morse_diagnosis" required>
+                <select id="morse_diagnosis" required onchange="calculateMorse()">
                   <option value="">Selecione...</option>
                   <option value="0">Não</option>
                   <option value="15">Sim</option>
@@ -428,7 +428,7 @@
               </div>
               <div class="form-group">
                 <label>Medicamentos *</label>
-                <select id="morse_medications" required>
+                <select id="morse_medications" required onchange="calculateMorse()">
                   <option value="">Selecione...</option>
                   <option value="0">Nenhum</option>
                   <option value="10">1 medicamento</option>
@@ -437,7 +437,7 @@
               </div>
               <div class="form-group">
                 <label>Dispositivos de Marcha *</label>
-                <select id="morse_device" required>
+                <select id="morse_device" required onchange="calculateMorse()">
                   <option value="">Selecione...</option>
                   <option value="0">Nenhum / Acamado</option>
                   <option value="15">Muleta / Bengala</option>
@@ -446,7 +446,7 @@
               </div>
               <div class="form-group">
                 <label>Marcha *</label>
-                <select id="morse_gait" required>
+                <select id="morse_gait" required onchange="calculateMorse()">
                   <option value="">Selecione...</option>
                   <option value="0">Normal / Acamado</option>
                   <option value="10">Fraca</option>
@@ -455,7 +455,7 @@
               </div>
               <div class="form-group">
                 <label>Estado Mental *</label>
-                <select id="morse_mental" required>
+                <select id="morse_mental" required onchange="calculateMorse()">
                   <option value="">Selecione...</option>
                   <option value="0">Orientado</option>
                   <option value="15">Confuso</option>
@@ -477,7 +477,7 @@
             <div class="form-grid">
               <div class="form-group">
                 <label>Percepção Sensorial *</label>
-                <select id="braden_perception" required>
+                <select id="braden_perception" required onchange="calculateBraden()">
                   <option value="">Selecione...</option>
                   <option value="4">Totalmente limitada</option>
                   <option value="3">Muito limitada</option>
@@ -487,7 +487,7 @@
               </div>
               <div class="form-group">
                 <label>Umidade *</label>
-                <select id="braden_moisture" required>
+                <select id="braden_moisture" required onchange="calculateBraden()">
                   <option value="">Selecione...</option>
                   <option value="4">Constantemente úmida</option>
                   <option value="3">Frequentemente úmida</option>
@@ -497,7 +497,7 @@
               </div>
               <div class="form-group">
                 <label>Atividade *</label>
-                <select id="braden_activity" required>
+                <select id="braden_activity" required onchange="calculateBraden()">
                   <option value="">Selecione...</option>
                   <option value="4">Acamado</option>
                   <option value="3">Confinado à cadeira</option>
@@ -507,7 +507,7 @@
               </div>
               <div class="form-group">
                 <label>Mobilidade *</label>
-                <select id="braden_mobility" required>
+                <select id="braden_mobility" required onchange="calculateBraden()">
                   <option value="">Selecione...</option>
                   <option value="4">Totalmente imóvel</option>
                   <option value="3">Muito limitada</option>
@@ -517,7 +517,7 @@
               </div>
               <div class="form-group">
                 <label>Nutrição *</label>
-                <select id="braden_nutrition" required>
+                <select id="braden_nutrition" required onchange="calculateBraden()">
                   <option value="">Selecione...</option>
                   <option value="4">Muito pobre</option>
                   <option value="3">Provavelmente inadequada</option>
@@ -527,7 +527,7 @@
               </div>
               <div class="form-group">
                 <label>Fricção/Cisalhamento *</label>
-                <select id="braden_friction" required>
+                <select id="braden_friction" required onchange="calculateBraden()">
                   <option value="">Selecione...</option>
                   <option value="3">Problema importante</option>
                   <option value="2">Problema potencial</option>
@@ -688,12 +688,12 @@
               <div class="costs-grid">
                 <div class="cost-item">
                   <label>Custo Base (Hospedagem Diária)</label>
-                  <input type="number" id="base_cost" step="0.01" placeholder="150.00" value="150">
+                  <input type="number" id="base_cost" step="0.01" placeholder="150.00" value="150" onchange="calculateTotalCost()">
                   <span class="cost-unit">R$ / dia</span>
                 </div>
                 <div class="cost-item">
                   <label>Custo por Nível de Dependência</label>
-                  <select id="dependency_level">
+                  <select id="dependency_level" onchange="calculateTotalCost()">
                     <option value="0">Independente (+ 0%)</option>
                     <option value="0.25">Leve (+ 25%)</option>
                     <option value="0.50">Moderada (+ 50%)</option>
