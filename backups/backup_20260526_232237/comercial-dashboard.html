@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Comercial - VIVARIS CARE</title>
+  <link rel="stylesheet" href="/css/design-system.css">
+  <link rel="stylesheet" href="/css/comercial-dashboard.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="comercial-dashboard-body">
+  <!-- SIDEBAR -->
+  <aside class="comercial-sidebar">
+    <div class="sidebar-header">
+      <div class="logo-badge">
+        <i class="fas fa-handshake"></i>
+      </div>
+      <h2>VENDAS</h2>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a href="#" class="nav-item active" data-page="dashboard">
+        <i class="fas fa-chart-bar"></i>
+        <span>Dashboard</span>
+      </a>
+      <a href="#" class="nav-item" data-page="new-resident">
+        <i class="fas fa-user-plus"></i>
+        <span>Novo Residente</span>
+      </a>
+      <a href="#" class="nav-item" data-page="sales-history">
+        <i class="fas fa-history"></i>
+        <span>Histórico de Vendas</span>
+      </a>
+      <a href="#" class="nav-item" data-page="contracts">
+        <i class="fas fa-file-contract"></i>
+        <span>Contratos</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <button class="nav-item logout-btn" id="logoutBtn">
+        <i class="fas fa-sign-out-alt"></i>
+        <span>Sair</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="comercial-main-content">
+    <!-- TOP BAR -->
+    <header class="comercial-top-bar">
+      <div class="top-bar-left">
+        <h1 id="pageTitle">Dashboard de Vendas</h1>
+        <p id="pageSubtitle">Seus residentes e contratos</p>
+      </div>
+      <div class="top-bar-right">
+        <div class="user-profile">
+          <div class="avatar" id="userAvatar">C</div>
+          <div class="user-info">
+            <p id="userName">Comercial</p>
+            <small id="userRole">Vendedor</small>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- PAGES CONTAINER -->
+    <div class="comercial-pages">
+      <!-- DASHBOARD PAGE -->
+      <div class="comercial-page active" id="page-dashboard">
+        <div class="container">
+          <!-- WELCOME SECTION -->
+          <div class="comercial-welcome">
+            <h2>Bem-vindo ao Painel de Vendas</h2>
+            <p>Gerencie seus residentes e contratos de forma profissional</p>
+          </div>
+
+          <!-- METRICS ROW -->
+          <div class="metrics-row">
+            <div class="metric-card">
+              <div class="metric-header">
+                <h3>Residentes Vendidos</h3>
+                <i class="fas fa-user-check"></i>
+              </div>
+              <div class="metric-value" id="metricSold">0</div>
+              <p class="metric-label">Este mês</p>
+            </div>
+
+            <div class="metric-card">
+              <div class="metric-header">
+                <h3>Receita</h3>
+                <i class="fas fa-dollar-sign"></i>
+              </div>
+              <div class="metric-value" id="metricRevenue">R$ 0</div>
+              <p class="metric-label">Comissões</p>
+            </div>
+
+            <div class="metric-card">
+              <div class="metric-header">
+                <h3>Taxa de Conversão</h3>
+                <i class="fas fa-percent"></i>
+              </div>
+              <div class="metric-value" id="metricConversion">0%</div>
+              <p class="metric-label">Contratos assinados</p>
+            </div>
+
+            <div class="metric-card">
+              <div class="metric-header">
+                <h3>Contatos</h3>
+                <i class="fas fa-users"></i>
+              </div>
+              <div class="metric-value" id="metricContacts">0</div>
+              <p class="metric-label">Em andamento</p>
+            </div>
+          </div>
+
+          <!-- CONTENT GRID -->
+          <div class="comercial-content-grid">
+            <!-- RECENT SALES -->
+            <section class="comercial-section">
+              <div class="section-header">
+                <h3>Vendas Recentes</h3>
+                <a href="#" class="link-more" onclick="switchPage('sales-history'); return false;">Ver todas →</a>
+              </div>
+              <div class="sales-list" id="recentSalesList">
+                <div class="empty-state">
+                  <i class="fas fa-inbox"></i>
+                  <p>Nenhuma venda registrada</p>
+                </div>
+              </div>
+            </section>
+
+            <!-- QUICK ACTIONS -->
+            <section class="comercial-section">
+              <div class="section-header">
+                <h3>Ações Rápidas</h3>
+              </div>
+              <div class="actions-grid">
+                <button class="action-card" onclick="window.location.href='/html/resident-form.html'">
+                  <i class="fas fa-user-plus"></i>
+                  <span>Novo Residente</span>
+                </button>
+                <button class="action-card" onclick="switchPage('contracts'); return false;">
+                  <i class="fas fa-file-contract"></i>
+                  <span>Ver Contratos</span>
+                </button>
+                <button class="action-card" onclick="switchPage('sales-history'); return false;">
+                  <i class="fas fa-chart-line"></i>
+                  <span>Histórico</span>
+                </button>
+                <button class="action-card">
+                  <i class="fas fa-download"></i>
+                  <span>Exportar</span>
+                </button>
+              </div>
+            </section>
+          </div>
+
+          <!-- RESIDENT DETAILS EXAMPLE -->
+          <section class="comercial-section">
+            <div class="section-header">
+              <h3>Exemplo: Escalas & Riscos (após criar residente)</h3>
+            </div>
+            <div class="example-box">
+              <p style="text-align: center; color: var(--text-secondary); padding: var(--space-8);">
+                <i class="fas fa-lightbulb"></i> Aqui aparecerão as escalas (Morse, Braden, Katz) em linguagem simples e os custos calculados
+              </p>
+            </div>
+          </section>
+        </div>
+      </div>
+
+      <!-- NEW RESIDENT PAGE -->
+      <div class="comercial-page" id="page-new-resident">
+        <div class="container">
+          <div class="page-header">
+            <div>
+              <h2>Cadastrar Novo Residente</h2>
+              <p>Preencha as 17 abas para criar um novo residente</p>
+            </div>
+          </div>
+
+          <div class="comercial-section">
+            <div class="form-redirect">
+              <i class="fas fa-arrow-right"></i>
+              <p>Você será redirecionado para o formulário completo</p>
+              <button class="btn btn-primary btn-lg" onclick="window.location.href='/html/resident-form.html'">
+                <i class="fas fa-user-plus"></i> Ir para Formulário
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SALES HISTORY PAGE -->
+      <div class="comercial-page" id="page-sales-history">
+        <div class="container">
+          <div class="page-header">
+            <div>
+              <h2>Histórico de Vendas</h2>
+              <p>Todos os residentes que você vendeu</p>
+            </div>
+          </div>
+
+          <div class="comercial-section">
+            <div class="filters-bar">
+              <input type="text" placeholder="Buscar por nome..." class="search-input">
+              <select class="filter-select">
+                <option value="">Filtrar por período...</option>
+                <option value="this-month">Este mês</option>
+                <option value="last-month">Mês passado</option>
+                <option value="this-year">Este ano</option>
+              </select>
+            </div>
+
+            <div class="sales-table" id="salesTableContainer">
+              <div class="empty-state">
+                <i class="fas fa-inbox"></i>
+                <p>Nenhuma venda registrada ainda</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CONTRACTS PAGE -->
+      <div class="comercial-page" id="page-contracts">
+        <div class="container">
+          <div class="page-header">
+            <div>
+              <h2>Contratos</h2>
+              <p>Gerencie todos os seus contratos</p>
+            </div>
+            <button class="btn btn-primary">
+              <i class="fas fa-plus"></i> Novo Contrato
+            </button>
+          </div>
+
+          <div class="comercial-section">
+            <div class="filters-bar">
+              <select class="filter-select">
+                <option value="">Filtrar por status...</option>
+                <option value="draft">Rascunho</option>
+                <option value="pending">Pendente de Assinatura</option>
+                <option value="signed">Assinado</option>
+                <option value="completed">Concluído</option>
+              </select>
+            </div>
+
+            <div class="contracts-list" id="contractsList">
+              <div class="empty-state">
+                <i class="fas fa-inbox"></i>
+                <p>Nenhum contrato registrado</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="/js/comercial-dashboard.js"></script>
+</body>
+</html>
