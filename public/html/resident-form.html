@@ -118,19 +118,19 @@
             <div class="form-grid">
               <div class="form-group full">
                 <label>Nome Completo *</label>
-                <input type="text" id="full_name" placeholder="Digite o nome completo" required>
+                <input type="text" id="full_name" placeholder="Digite o nome completo" name="full_name">
               </div>
               <div class="form-group">
                 <label>CPF *</label>
-                <input type="text" id="cpf" placeholder="000.000.000-00" required>
+                <input type="text" id="cpf" placeholder="000.000.000-00" name="cpf">
               </div>
               <div class="form-group">
                 <label>RG *</label>
-                <input type="text" id="rg" placeholder="Digite o RG">
+                <input type="text" id="rg" placeholder="Digite o RG" name="rg">
               </div>
               <div class="form-group">
                 <label>Gênero *</label>
-                <select id="gender" required>
+                <select id="gender" name="gender">
                   <option value="">Selecione...</option>
                   <option value="M">Masculino</option>
                   <option value="F">Feminino</option>
@@ -138,7 +138,7 @@
               </div>
               <div class="form-group full">
                 <label>Naturalidade</label>
-                <input type="text" id="naturalidade" placeholder="Cidade/Estado">
+                <input type="text" id="naturalidade" placeholder="Cidade/Estado" name="naturalidade">
               </div>
             </div>
           </div>
@@ -152,11 +152,11 @@
             <div class="form-grid">
               <div class="form-group">
                 <label>Data de Nascimento *</label>
-                <input type="date" id="birth_date" required>
+                <input type="date" id="birth_date" name="birth_date">
               </div>
               <div class="form-group">
                 <label>Idade (Automática)</label>
-                <input type="number" id="age" readonly placeholder="Calculada automaticamente">
+                <input type="number" id="age" readonly placeholder="Calculada automaticamente" name="age">
               </div>
             </div>
           </div>
@@ -170,27 +170,27 @@
             <div class="form-grid">
               <div class="form-group">
                 <label>Telefone Principal</label>
-                <input type="tel" id="phone_main" placeholder="(00) 00000-0000">
+                <input type="tel" id="phone_main" placeholder="(00) 00000-0000" name="phone_main">
               </div>
               <div class="form-group">
                 <label>Telefone Secundário</label>
-                <input type="tel" id="phone_secondary" placeholder="(00) 00000-0000">
+                <input type="tel" id="phone_secondary" placeholder="(00) 00000-0000" name="phone_secondary">
               </div>
               <div class="form-group full">
                 <label>Endereço</label>
-                <input type="text" id="address" placeholder="Rua, número, bairro">
+                <input type="text" id="address" placeholder="Rua, número, bairro" name="address">
               </div>
               <div class="form-group">
                 <label>Cidade</label>
-                <input type="text" id="city" placeholder="Cidade">
+                <input type="text" id="city" placeholder="Cidade" name="city">
               </div>
               <div class="form-group">
                 <label>Estado</label>
-                <input type="text" id="state" placeholder="UF">
+                <input type="text" id="state" placeholder="UF" name="state">
               </div>
               <div class="form-group">
                 <label>CEP</label>
-                <input type="text" id="cep" placeholder="00000-000">
+                <input type="text" id="cep" placeholder="00000-000" name="cep">
               </div>
             </div>
           </div>
@@ -204,19 +204,19 @@
             <div class="form-grid">
               <div class="form-group full">
                 <label>Nome do Responsável *</label>
-                <input type="text" id="responsible_name" placeholder="Nome completo" required>
+                <input type="text" id="responsible_name" placeholder="Nome completo" name="responsible_name">
               </div>
               <div class="form-group">
                 <label>Grau de Parentesco</label>
-                <input type="text" id="responsible_relationship" placeholder="Filho, cônjuge, etc">
+                <input type="text" id="responsible_relationship" placeholder="Filho, cônjuge, etc" name="responsible_relationship">
               </div>
               <div class="form-group">
                 <label>Telefone do Responsável *</label>
-                <input type="tel" id="responsible_phone" placeholder="(00) 00000-0000" required>
+                <input type="tel" id="responsible_phone" placeholder="(00) 00000-0000" name="responsible_phone">
               </div>
               <div class="form-group full">
                 <label>Email do Responsável</label>
-                <input type="email" id="responsible_email" placeholder="email@exemplo.com">
+                <input type="email" id="responsible_email" placeholder="email@exemplo.com" name="responsible_email">
               </div>
             </div>
           </div>
@@ -230,7 +230,7 @@
             <div class="form-grid">
               <div class="form-group">
                 <label>Tipo de Cobertura</label>
-                <select id="coverage_type">
+                <select id="coverage_type" name="coverage_type">
                   <option value="">Selecione...</option>
                   <option value="particular">Particular</option>
                   <option value="sus">SUS</option>
@@ -240,11 +240,11 @@
               </div>
               <div class="form-group full">
                 <label>Nome do Convênio/Plano</label>
-                <input type="text" id="health_plan_name" placeholder="Ex: Unimed, Bradesco Saúde, etc">
+                <input type="text" id="health_plan_name" placeholder="Ex: Unimed, Bradesco Saúde, etc" name="health_plan_name">
               </div>
               <div class="form-group">
                 <label>Número da Carteirinha</label>
-                <input type="text" id="health_plan_number" placeholder="Número da carteirinha">
+                <input type="text" id="health_plan_number" placeholder="Número da carteirinha" name="health_plan_number">
               </div>
             </div>
           </div>
@@ -258,15 +258,15 @@
             <div class="form-grid">
               <div class="form-group full">
                 <label>Diagnósticos Principais (separe por vírgula)</label>
-                <textarea id="diagnoses" placeholder="Ex: Hipertensão, Diabetes tipo 2, Osteoporose"></textarea>
+                <textarea id="diagnoses" placeholder="Ex: Hipertensão, Diabetes tipo 2, Osteoporose" name="diagnoses"></textarea>
               </div>
               <div class="form-group full">
                 <label>Cirurgias Anteriores</label>
-                <textarea id="surgeries" placeholder="Descreva cirurgias, datas se possível"></textarea>
+                <textarea id="surgeries" placeholder="Descreva cirurgias, datas se possível" name="surgeries"></textarea>
               </div>
               <div class="form-group full">
                 <label>Doenças Crônicas</label>
-                <textarea id="chronic_diseases" placeholder="Doenças crônicas existentes"></textarea>
+                <textarea id="chronic_diseases" placeholder="Doenças crônicas existentes" name="chronic_diseases"></textarea>
               </div>
             </div>
           </div>
@@ -280,7 +280,7 @@
             <div class="form-grid">
               <div class="form-group full">
                 <label>Medicações em Uso (uma por linha)</label>
-                <textarea id="medications" placeholder="Nome do medicamento, dose, frequência&#10;Ex: Losartana 50mg - 1x ao dia&#10;Metformina 500mg - 2x ao dia"></textarea>
+                <textarea id="medications" placeholder="Nome do medicamento, dose, frequência&#10;Ex: Losartana 50mg - 1x ao dia&#10;Metformina 500mg - 2x ao dia" name="medications"></textarea>
               </div>
             </div>
           </div>
@@ -294,15 +294,15 @@
             <div class="form-grid">
               <div class="form-group full">
                 <label>Alergias Medicamentosas</label>
-                <textarea id="allergies_medications" placeholder="Ex: Penicilina, Sulfonamidas"></textarea>
+                <textarea id="allergies_medications" placeholder="Ex: Penicilina, Sulfonamidas" name="allergies_medications"></textarea>
               </div>
               <div class="form-group full">
                 <label>Alergias Alimentares</label>
-                <textarea id="allergies_food" placeholder="Ex: Frutos do mar, amendoim, leite"></textarea>
+                <textarea id="allergies_food" placeholder="Ex: Frutos do mar, amendoim, leite" name="allergies_food"></textarea>
               </div>
               <div class="form-group full">
                 <label>Outras Alergias</label>
-                <textarea id="allergies_other" placeholder="Outras alergias conhecidas"></textarea>
+                <textarea id="allergies_other" placeholder="Outras alergias conhecidas" name="allergies_other"></textarea>
               </div>
             </div>
           </div>
@@ -316,27 +316,27 @@
             <div class="form-grid">
               <div class="form-group">
                 <label>Peso (kg) *</label>
-                <input type="number" id="weight" step="0.1" placeholder="Ex: 75.5" required>
+                <input type="number" id="weight" step="0.1" placeholder="Ex: 75.5" name="weight">
               </div>
               <div class="form-group">
                 <label>Altura (cm) *</label>
-                <input type="number" id="height" placeholder="Ex: 170" required>
+                <input type="number" id="height" placeholder="Ex: 170" name="height">
               </div>
               <div class="form-group">
                 <label>IMC (Automático)</label>
-                <input type="number" id="imc" step="0.1" readonly placeholder="Calculado automaticamente">
+                <input type="number" id="imc" step="0.1" readonly placeholder="Calculado automaticamente" name="imc">
               </div>
               <div class="form-group">
                 <label>Tipo de Cabelo</label>
-                <input type="text" id="hair_type" placeholder="Ex: Branco, grisalho, castanho">
+                <input type="text" id="hair_type" placeholder="Ex: Branco, grisalho, castanho" name="hair_type">
               </div>
               <div class="form-group">
                 <label>Cor dos Olhos</label>
-                <input type="text" id="eye_color" placeholder="Ex: Azul, castanho, verde">
+                <input type="text" id="eye_color" placeholder="Ex: Azul, castanho, verde" name="eye_color">
               </div>
               <div class="form-group">
                 <label>Sinais Distintivos</label>
-                <input type="text" id="distinctive_marks" placeholder="Cicatrizes, tatuagens, etc">
+                <input type="text" id="distinctive_marks" placeholder="Cicatrizes, tatuagens, etc" name="distinctive_marks">
               </div>
             </div>
           </div>
@@ -350,7 +350,7 @@
             <div class="form-grid">
               <div class="form-group">
                 <label>Banho *</label>
-                <select id="katz_bath" required>
+                <select id="katz_bath" name="katz_bath">
                   <option value="">Selecione...</option>
                   <option value="1">Independente</option>
                   <option value="0">Dependente</option>
@@ -358,7 +358,7 @@
               </div>
               <div class="form-group">
                 <label>Vestiário *</label>
-                <select id="katz_dress" required>
+                <select id="katz_dress" name="katz_dress">
                   <option value="">Selecione...</option>
                   <option value="1">Independente</option>
                   <option value="0">Dependente</option>
@@ -366,7 +366,7 @@
               </div>
               <div class="form-group">
                 <label>Higiene Pessoal *</label>
-                <select id="katz_hygiene" required>
+                <select id="katz_hygiene" name="katz_hygiene">
                   <option value="">Selecione...</option>
                   <option value="1">Independente</option>
                   <option value="0">Dependente</option>
@@ -374,7 +374,7 @@
               </div>
               <div class="form-group">
                 <label>Continência *</label>
-                <select id="katz_continence" required>
+                <select id="katz_continence" name="katz_continence">
                   <option value="">Selecione...</option>
                   <option value="1">Independente</option>
                   <option value="0">Dependente</option>
@@ -382,7 +382,7 @@
               </div>
               <div class="form-group">
                 <label>Alimentação *</label>
-                <select id="katz_feeding" required>
+                <select id="katz_feeding" name="katz_feeding">
                   <option value="">Selecione...</option>
                   <option value="1">Independente</option>
                   <option value="0">Dependente</option>
@@ -390,7 +390,7 @@
               </div>
               <div class="form-group">
                 <label>Transferência *</label>
-                <select id="katz_transfer" required>
+                <select id="katz_transfer" name="katz_transfer">
                   <option value="">Selecione...</option>
                   <option value="1">Independente</option>
                   <option value="0">Dependente</option>
@@ -412,7 +412,7 @@
             <div class="form-grid">
               <div class="form-group">
                 <label>Histórico de Queda *</label>
-                <select id="morse_history" required>
+                <select id="morse_history" name="morse_history">
                   <option value="">Selecione...</option>
                   <option value="0">Não</option>
                   <option value="25">Sim</option>
@@ -420,7 +420,7 @@
               </div>
               <div class="form-group">
                 <label>Segundo Diagnóstico *</label>
-                <select id="morse_diagnosis" required>
+                <select id="morse_diagnosis" name="morse_diagnosis">
                   <option value="">Selecione...</option>
                   <option value="0">Não</option>
                   <option value="15">Sim</option>
@@ -428,7 +428,7 @@
               </div>
               <div class="form-group">
                 <label>Medicamentos *</label>
-                <select id="morse_medications" required>
+                <select id="morse_medications" name="morse_medications">
                   <option value="">Selecione...</option>
                   <option value="0">Nenhum</option>
                   <option value="10">1 medicamento</option>
@@ -437,7 +437,7 @@
               </div>
               <div class="form-group">
                 <label>Dispositivos de Marcha *</label>
-                <select id="morse_device" required>
+                <select id="morse_device" name="morse_device">
                   <option value="">Selecione...</option>
                   <option value="0">Nenhum / Acamado</option>
                   <option value="15">Muleta / Bengala</option>
@@ -446,7 +446,7 @@
               </div>
               <div class="form-group">
                 <label>Marcha *</label>
-                <select id="morse_gait" required>
+                <select id="morse_gait" name="morse_gait">
                   <option value="">Selecione...</option>
                   <option value="0">Normal / Acamado</option>
                   <option value="10">Fraca</option>
@@ -455,7 +455,7 @@
               </div>
               <div class="form-group">
                 <label>Estado Mental *</label>
-                <select id="morse_mental" required>
+                <select id="morse_mental" name="morse_mental">
                   <option value="">Selecione...</option>
                   <option value="0">Orientado</option>
                   <option value="15">Confuso</option>
@@ -477,7 +477,7 @@
             <div class="form-grid">
               <div class="form-group">
                 <label>Percepção Sensorial *</label>
-                <select id="braden_perception" required>
+                <select id="braden_perception" name="braden_perception">
                   <option value="">Selecione...</option>
                   <option value="4">Totalmente limitada</option>
                   <option value="3">Muito limitada</option>
@@ -487,7 +487,7 @@
               </div>
               <div class="form-group">
                 <label>Umidade *</label>
-                <select id="braden_moisture" required>
+                <select id="braden_moisture" name="braden_moisture">
                   <option value="">Selecione...</option>
                   <option value="4">Constantemente úmida</option>
                   <option value="3">Frequentemente úmida</option>
@@ -497,7 +497,7 @@
               </div>
               <div class="form-group">
                 <label>Atividade *</label>
-                <select id="braden_activity" required>
+                <select id="braden_activity" name="braden_activity">
                   <option value="">Selecione...</option>
                   <option value="4">Acamado</option>
                   <option value="3">Confinado à cadeira</option>
@@ -507,7 +507,7 @@
               </div>
               <div class="form-group">
                 <label>Mobilidade *</label>
-                <select id="braden_mobility" required>
+                <select id="braden_mobility" name="braden_mobility">
                   <option value="">Selecione...</option>
                   <option value="4">Totalmente imóvel</option>
                   <option value="3">Muito limitada</option>
@@ -517,7 +517,7 @@
               </div>
               <div class="form-group">
                 <label>Nutrição *</label>
-                <select id="braden_nutrition" required>
+                <select id="braden_nutrition" name="braden_nutrition">
                   <option value="">Selecione...</option>
                   <option value="4">Muito pobre</option>
                   <option value="3">Provavelmente inadequada</option>
@@ -527,7 +527,7 @@
               </div>
               <div class="form-group">
                 <label>Fricção/Cisalhamento *</label>
-                <select id="braden_friction" required>
+                <select id="braden_friction" name="braden_friction">
                   <option value="">Selecione...</option>
                   <option value="3">Problema importante</option>
                   <option value="2">Problema potencial</option>
@@ -550,7 +550,7 @@
             <div class="form-grid">
               <div class="form-group">
                 <label>Tabagismo</label>
-                <select id="smoking">
+                <select id="smoking" name="smoking">
                   <option value="">Selecione...</option>
                   <option value="never">Nunca fumou</option>
                   <option value="former">Ex-fumante</option>
@@ -559,7 +559,7 @@
               </div>
               <div class="form-group">
                 <label>Consumo de Álcool</label>
-                <select id="alcohol">
+                <select id="alcohol" name="alcohol">
                   <option value="">Selecione...</option>
                   <option value="never">Nunca</option>
                   <option value="social">Social</option>
@@ -568,7 +568,7 @@
               </div>
               <div class="form-group full">
                 <label>Atividades Recreativas</label>
-                <input type="text" id="recreational" placeholder="Hobbies, atividades que gosta">
+                <input type="text" id="recreational" placeholder="Hobbies, atividades que gosta" name="recreational">
               </div>
             </div>
           </div>
@@ -582,15 +582,15 @@
             <div class="form-grid">
               <div class="form-group full">
                 <label>Restrições Dietéticas</label>
-                <textarea id="diet_restrictions" placeholder="Ex: Sem sal, sem açúcar, sem glúten, líquida"></textarea>
+                <textarea id="diet_restrictions" placeholder="Ex: Sem sal, sem açúcar, sem glúten, líquida" name="diet_restrictions"></textarea>
               </div>
               <div class="form-group full">
                 <label>Preferências Alimentares</label>
-                <textarea id="food_preferences" placeholder="Alimentos que gosta ou não gosta"></textarea>
+                <textarea id="food_preferences" placeholder="Alimentos que gosta ou não gosta" name="food_preferences"></textarea>
               </div>
               <div class="form-group">
                 <label>Dificuldade para Mastigar/Engolir</label>
-                <select id="swallowing_difficulty">
+                <select id="swallowing_difficulty" name="swallowing_difficulty">
                   <option value="">Selecione...</option>
                   <option value="none">Nenhuma</option>
                   <option value="mild">Leve</option>
@@ -610,23 +610,23 @@
             <div class="form-grid">
               <div class="form-group">
                 <label>Influenza (Gripe) - Ano</label>
-                <input type="number" id="vaccine_flu" placeholder="2026" min="2000" max="2026">
+                <input type="number" id="vaccine_flu" placeholder="2026" min="2000" max="2026" name="vaccine_flu">
               </div>
               <div class="form-group">
                 <label>Pneumococo - Ano</label>
-                <input type="number" id="vaccine_pneumo" placeholder="2026" min="2000" max="2026">
+                <input type="number" id="vaccine_pneumo" placeholder="2026" min="2000" max="2026" name="vaccine_pneumo">
               </div>
               <div class="form-group">
                 <label>Tétano - Ano</label>
-                <input type="number" id="vaccine_tetanus" placeholder="2026" min="2000" max="2026">
+                <input type="number" id="vaccine_tetanus" placeholder="2026" min="2000" max="2026" name="vaccine_tetanus">
               </div>
               <div class="form-group">
                 <label>COVID-19 (Última dose) - Ano</label>
-                <input type="number" id="vaccine_covid" placeholder="2026" min="2000" max="2026">
+                <input type="number" id="vaccine_covid" placeholder="2026" min="2000" max="2026" name="vaccine_covid">
               </div>
               <div class="form-group full">
                 <label>Outras Vacinas</label>
-                <textarea id="other_vaccines" placeholder="Outras vacinas relevantes e datas"></textarea>
+                <textarea id="other_vaccines" placeholder="Outras vacinas relevantes e datas" name="other_vaccines"></textarea>
               </div>
             </div>
           </div>
@@ -640,15 +640,15 @@
             <div class="form-grid">
               <div class="form-group full">
                 <label>Observações Clínicas</label>
-                <textarea id="clinical_notes" placeholder="Qualquer informação clínica relevante não coberta nos campos anteriores"></textarea>
+                <textarea id="clinical_notes" placeholder="Qualquer informação clínica relevante não coberta nos campos anteriores" name="clinical_notes"></textarea>
               </div>
               <div class="form-group full">
                 <label>Preferências de Cuidados</label>
-                <textarea id="care_preferences" placeholder="Como o residente prefere ser cuidado, temperamento, preferências pessoais"></textarea>
+                <textarea id="care_preferences" placeholder="Como o residente prefere ser cuidado, temperamento, preferências pessoais" name="care_preferences"></textarea>
               </div>
               <div class="form-group full">
                 <label>Recomendações Especiais</label>
-                <textarea id="special_recommendations" placeholder="Orientações especiais para equipe de cuidados"></textarea>
+                <textarea id="special_recommendations" placeholder="Orientações especiais para equipe de cuidados" name="special_recommendations"></textarea>
               </div>
             </div>
           </div>
@@ -688,12 +688,12 @@
               <div class="costs-grid">
                 <div class="cost-item">
                   <label>Custo Base (Hospedagem Diária)</label>
-                  <input type="number" id="base_cost" step="0.01" placeholder="150.00" value="150">
+                  <input type="number" id="base_cost" step="0.01" placeholder="150.00" value="150" name="base_cost">
                   <span class="cost-unit">R$ / dia</span>
                 </div>
                 <div class="cost-item">
                   <label>Custo por Nível de Dependência</label>
-                  <select id="dependency_level">
+                  <select id="dependency_level" name="dependency_level">
                     <option value="0">Independente (+ 0%)</option>
                     <option value="0.25">Leve (+ 25%)</option>
                     <option value="0.50">Moderada (+ 50%)</option>
