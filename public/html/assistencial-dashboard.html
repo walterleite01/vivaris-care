@@ -1,459 +1,252 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard Assistencial - VIVARIS CARE</title>
-  <link rel="stylesheet" href="/css/design-system.css">
-  <link rel="stylesheet" href="/css/assistencial-dashboard.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VIVARIS CARE - Dashboard Assistencial</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/assistencial-dashboard.css">
 </head>
-<body class="assistencial-dashboard-body">
-  <!-- SIDEBAR -->
-  <aside class="assistencial-sidebar">
-    <div class="sidebar-header">
-      <div class="logo-badge">
-        <i class="fas fa-stethoscope"></i>
-      </div>
-      <h2>ASSISTENCIAL</h2>
+<body>
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <i class="fas fa-heartbeat"></i>
+                <span>VIVARIS</span>
+            </div>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <a href="#" class="nav-item active" onclick="switchPage('dashboard'); return false;">
+                <i class="fas fa-home"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="#" class="nav-item" onclick="switchPage('residents'); return false;">
+                <i class="fas fa-users"></i>
+                <span>Residentes</span>
+            </a>
+            <a href="#" class="nav-item" onclick="switchPage('timeline'); return false;">
+                <i class="fas fa-clock"></i>
+                <span>Timeline</span>
+            </a>
+            <a href="#" class="nav-item" onclick="switchPage('medicacoes'); return false;">
+                <i class="fas fa-pills"></i>
+                <span>Medicações</span>
+            </a>
+            <a href="#" class="nav-item" onclick="switchPage('relatorios'); return false;">
+                <i class="fas fa-chart-bar"></i>
+                <span>Relatórios</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <button class="logout-btn" onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i>
+                Sair
+            </button>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-container">
+        <!-- HEADER -->
+        <header class="top-header">
+            <div class="header-left">
+                <h1 id="pageTitle">Dashboard Assistencial</h1>
+                <p id="pageSubtitle">Gerencie residentes e cuidados clínicos</p>
+            </div>
+            <div class="header-right">
+                <div class="user-info">
+                    <span id="userName">Carregando...</span>
+                    <div class="user-avatar">
+                        <i class="fas fa-user-circle"></i>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- CONTENT AREA -->
+        <div class="content-wrapper">
+
+            <!-- PÁGINA: DASHBOARD -->
+            <div class="assistencial-page active" id="page-dashboard">
+                <!-- HERO SECTION: ALERTAS CRÍTICOS -->
+                <section class="hero-section">
+                    <h2>🚨 Alertas Críticos</h2>
+                    <div class="alerts-container" id="alertsContainer">
+                        <div class="alert-empty">
+                            <i class="fas fa-check-circle"></i>
+                            <p>Nenhum alerta crítico</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- FILTROS -->
+                <section class="filters-section">
+                    <h2>Filtrar Residentes</h2>
+                    <div class="filters-grid">
+                        <div class="filter-group">
+                            <label>Risco</label>
+                            <select id="filterRisco" onchange="applyFilters()">
+                                <option value="">Todos</option>
+                                <option value="alto">Alto Risco</option>
+                                <option value="moderado">Risco Moderado</option>
+                                <option value="baixo">Baixo Risco</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label>Status</label>
+                            <select id="filterStatus" onchange="applyFilters()">
+                                <option value="">Todos</option>
+                                <option value="estavel">Estável</option>
+                                <option value="observacao">Observação</option>
+                                <option value="critico">Crítico</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label>Buscar</label>
+                            <input type="text" id="searchResident" placeholder="Nome ou quarto..." onkeyup="applyFilters()">
+                        </div>
+                    </div>
+                </section>
+
+                <!-- CARDS DE RESIDENTES -->
+                <section class="residents-section">
+                    <h2>Residentes Sob Meu Cuidado</h2>
+                    <div class="residents-grid" id="residentsGrid">
+                        <div class="loading">
+                            <i class="fas fa-spinner fa-spin"></i> Carregando...
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- PÁGINA: RESIDENTS (LISTA COMPLETA) -->
+            <div class="assistencial-page" id="page-residents">
+                <div class="page-header">
+                    <h2>Todos os Residentes</h2>
+                    <input type="text" id="searchAllResidents" placeholder="Buscar..." onkeyup="applyFilters()">
+                </div>
+                <div class="residents-table-wrapper">
+                    <table class="residents-table">
+                        <thead>
+                            <tr>
+                                <th>Nome</th>
+                                <th>Quarto</th>
+                                <th>Idade</th>
+                                <th>Risco Queda</th>
+                                <th>Úlcera de Pressão</th>
+                                <th>Status</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="residentsTableBody">
+                            <tr><td colspan="7" class="loading"><i class="fas fa-spinner fa-spin"></i> Carregando...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- PÁGINA: TIMELINE CLÍNICA -->
+            <div class="assistencial-page" id="page-timeline">
+                <div class="timeline-container">
+                    <!-- SELETOR DE RESIDENTE -->
+                    <div class="timeline-header">
+                        <div class="resident-selector">
+                            <label>Selecione um residente:</label>
+                            <select id="timelineResidentSelect" onchange="loadTimeline()">
+                                <option value="">-- Escolha um residente --</option>
+                            </select>
+                        </div>
+                        <div class="timeline-controls">
+                            <button class="btn btn-primary" onclick="openNewEventModal()">
+                                <i class="fas fa-plus"></i> Novo Evento
+                            </button>
+                            <button class="btn btn-secondary" onclick="toggleView()">
+                                <i class="fas fa-eye"></i> Alternar Visualização
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- FEED DA TIMELINE -->
+                    <div class="timeline-feed" id="timelineFeed">
+                        <div class="empty-state">
+                            <i class="fas fa-inbox"></i>
+                            <p>Selecione um residente para ver a timeline</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PÁGINA: MEDICAÇÕES -->
+            <div class="assistencial-page" id="page-medicacoes">
+                <div class="medicacoes-container">
+                    <h2>Medicações Pendentes</h2>
+                    <div id="medicacoesContainer" class="medicacoes-list">
+                        <div class="loading"><i class="fas fa-spinner fa-spin"></i> Carregando...</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PÁGINA: RELATÓRIOS -->
+            <div class="assistencial-page" id="page-relatorios">
+                <h2>Relatórios</h2>
+                <div class="reports-container">
+                    <p>Seção de relatórios em desenvolvimento...</p>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- MODAL: NOVO EVENTO -->
+    <div class="modal" id="newEventModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Novo Evento Clínico</h2>
+                <button class="close-btn" onclick="closeModal('newEventModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Tipo de Evento</label>
+                    <select id="eventType">
+                        <option value="nurse_note">Anotação de Enfermagem</option>
+                        <option value="physician_note">Anotação Médica</option>
+                        <option value="medication">Administração de Medicação</option>
+                        <option value="incident">Incidente/Acidente</option>
+                        <option value="scale">Escala Geriátrica</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Título</label>
+                    <input type="text" id="eventTitle" placeholder="Breve descrição do evento">
+                </div>
+                <div class="form-group">
+                    <label>Descrição Detalhada</label>
+                    <textarea id="eventContent" rows="5" placeholder="Detalhes do evento..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Visibilidade</label>
+                    <select id="eventAudience">
+                        <option value="internal_only">Apenas Equipe</option>
+                        <option value="family_visible">Visível para Família</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="eventCritical">
+                        Marcar como CRÍTICO
+                    </label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('newEventModal')">Cancelar</button>
+                <button class="btn btn-primary" onclick="saveNewEvent()">Salvar Evento</button>
+            </div>
+        </div>
     </div>
 
-    <nav class="sidebar-nav">
-      <a href="#" class="nav-item active" data-page="dashboard">
-        <i class="fas fa-home"></i>
-        <span>Dashboard</span>
-      </a>
-      <a href="#" class="nav-item" data-page="residents">
-        <i class="fas fa-users"></i>
-        <span>Residentes</span>
-      </a>
-      <a href="#" class="nav-item" data-page="activities">
-        <i class="fas fa-tasks"></i>
-        <span>Atividades</span>
-      </a>
-      <a href="#" class="nav-item" data-page="chat">
-        <i class="fas fa-comments"></i>
-        <span>Chat</span>
-        <span class="nav-badge" id="chatBadge">3</span>
-      </a>
-    </nav>
-
-    <div class="sidebar-footer">
-      <button class="nav-item logout-btn" id="logoutBtn">
-        <i class="fas fa-sign-out-alt"></i>
-        <span>Sair</span>
-      </button>
-    </div>
-  </aside>
-
-  <!-- MAIN CONTENT -->
-  <main class="assistencial-main-content">
-    <!-- TOP BAR -->
-    <header class="assistencial-top-bar">
-      <div class="top-bar-left">
-        <h1 id="pageTitle">Dashboard</h1>
-        <p id="pageSubtitle">Gerenciamento de residentes</p>
-      </div>
-      <div class="top-bar-right">
-        <div class="user-profile">
-          <div class="avatar" id="userAvatar">A</div>
-          <div class="user-info">
-            <p id="userName">Assistencial</p>
-            <small id="userRole">Enfermeiro</small>
-          </div>
-        </div>
-      </div>
-    </header>
-
-    <!-- PAGES CONTAINER -->
-    <div class="assistencial-pages">
-      <!-- DASHBOARD PAGE -->
-      <div class="assistencial-page active" id="page-dashboard">
-        <div class="container">
-          <!-- WELCOME -->
-          <div class="assistencial-welcome">
-            <h2>Bem-vindo ao Painel Assistencial</h2>
-            <p>Gerencie residentes, registre atividades e comunique-se com a equipe</p>
-          </div>
-
-          <!-- QUICK STATS -->
-          <div class="stats-row">
-            <div class="stat-card">
-              <div class="stat-icon">👥</div>
-              <div class="stat-info">
-                <p class="stat-label">Residentes sob Cuidado</p>
-                <p class="stat-value" id="statResidents">0</p>
-              </div>
-            </div>
-
-            <div class="stat-card">
-              <div class="stat-icon">⚠️</div>
-              <div class="stat-info">
-                <p class="stat-label">Alertas Hoje</p>
-                <p class="stat-value" id="statAlerts">0</p>
-              </div>
-            </div>
-
-            <div class="stat-card">
-              <div class="stat-icon">📋</div>
-              <div class="stat-info">
-                <p class="stat-label">Atividades Pendentes</p>
-                <p class="stat-value" id="statPending">0</p>
-              </div>
-            </div>
-
-            <div class="stat-card">
-              <div class="stat-icon">💬</div>
-              <div class="stat-info">
-                <p class="stat-label">Mensagens não lidas</p>
-                <p class="stat-value" id="statMessages">3</p>
-              </div>
-            </div>
-          </div>
-
-          <!-- CONTENT GRID -->
-          <div class="assistencial-content-grid">
-            <!-- RESIDENTS LIST -->
-            <section class="assistencial-section">
-              <div class="section-header">
-                <h3>Residentes Ativos</h3>
-              </div>
-              <div class="residents-list" id="dashboardResidentsList">
-                <div class="empty-state">
-                  <i class="fas fa-inbox"></i>
-                  <p>Nenhum residente disponível</p>
-                </div>
-              </div>
-            </section>
-
-            <!-- QUICK ACTIONS -->
-            <section class="assistencial-section">
-              <div class="section-header">
-                <h3>Ações Rápidas</h3>
-              </div>
-              <div class="quick-actions">
-                <button class="action-btn" onclick="switchPage('activities')">
-                  <i class="fas fa-plus-circle"></i>
-                  <span>Registrar Atividade</span>
-                </button>
-                <button class="action-btn">
-                  <i class="fas fa-pills"></i>
-                  <span>Atualizar Medicação</span>
-                </button>
-                <button class="action-btn" onclick="switchPage('chat')">
-                  <i class="fas fa-comments"></i>
-                  <span>Chat</span>
-                </button>
-                <button class="action-btn">
-                  <i class="fas fa-camera"></i>
-                  <span>Documentar com Foto</span>
-                </button>
-              </div>
-            </section>
-          </div>
-
-          <!-- RECENT ACTIVITIES -->
-          <section class="assistencial-section">
-            <div class="section-header">
-              <h3>Atividades Recentes</h3>
-              <a href="#" class="link-more" onclick="switchPage('activities'); return false;">Ver todas →</a>
-            </div>
-            <div class="activities-feed" id="recentActivities">
-              <div class="empty-state">
-                <i class="fas fa-inbox"></i>
-                <p>Nenhuma atividade registrada</p>
-              </div>
-            </div>
-          </section>
-        </div>
-      </div>
-
-      <!-- RESIDENTS PAGE -->
-      <div class="assistencial-page" id="page-residents">
-        <div class="container">
-          <div class="page-header">
-            <div>
-              <h2>Residentes</h2>
-              <p>Selecione um residente para ver seu prontuário completo</p>
-            </div>
-          </div>
-
-          <div class="assistencial-section">
-            <div class="search-bar">
-              <i class="fas fa-search"></i>
-              <input type="text" id="searchResidents" placeholder="Buscar residente...">
-            </div>
-
-            <div class="residents-grid" id="residentsList">
-              <div class="empty-state">
-                <i class="fas fa-inbox"></i>
-                <p>Nenhum residente encontrado</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- RESIDENT DETAIL (Modal-like) -->
-      <div class="assistencial-page" id="page-resident-detail" style="display: none;">
-        <div class="resident-detail-modal">
-          <div class="modal-header">
-            <button class="btn-close" onclick="closeResidentDetail()">
-              <i class="fas fa-times"></i>
-            </button>
-            <h2 id="residentDetailName">Nome do Residente</h2>
-            <p id="residentDetailInfo">Informações</p>
-          </div>
-
-          <div class="modal-content">
-            <!-- TABS FOR 17 SECTIONS -->
-            <div class="detail-tabs">
-              <button class="detail-tab active" data-section="overview">
-                <i class="fas fa-eye"></i> Visão Geral
-              </button>
-              <button class="detail-tab" data-section="scales">
-                <i class="fas fa-chart-line"></i> Escalas
-              </button>
-              <button class="detail-tab" data-section="medications">
-                <i class="fas fa-pills"></i> Medicações
-              </button>
-              <button class="detail-tab" data-section="allergies">
-                <i class="fas fa-exclamation"></i> Alergias
-              </button>
-              <button class="detail-tab" data-section="clinical">
-                <i class="fas fa-notes-medical"></i> Clínico
-              </button>
-              <button class="detail-tab" data-section="activities">
-                <i class="fas fa-history"></i> Histórico
-              </button>
-            </div>
-
-            <!-- TAB CONTENT -->
-            <div class="detail-content" id="detailContent">
-              <!-- OVERVIEW -->
-              <div class="detail-section active" data-section="overview">
-                <h3>Informações Pessoais</h3>
-                <div class="info-grid">
-                  <div class="info-item">
-                    <label>Data de Nascimento</label>
-                    <p id="detail-birth">-</p>
-                  </div>
-                  <div class="info-item">
-                    <label>Gênero</label>
-                    <p id="detail-gender">-</p>
-                  </div>
-                  <div class="info-item">
-                    <label>Telefone</label>
-                    <p id="detail-phone">-</p>
-                  </div>
-                  <div class="info-item">
-                    <label>Responsável</label>
-                    <p id="detail-responsible">-</p>
-                  </div>
-                </div>
-
-                <h3 style="margin-top: var(--space-8);">Diagnósticos</h3>
-                <p id="detail-diagnoses" style="color: var(--text-secondary);">-</p>
-
-                <h3 style="margin-top: var(--space-8);">Histórico Médico</h3>
-                <p id="detail-history" style="color: var(--text-secondary);">-</p>
-              </div>
-
-              <!-- SCALES -->
-              <div class="detail-section" data-section="scales">
-                <h3>Escalas Geriátricas</h3>
-                <div class="scales-container">
-                  <div class="scale-box morse">
-                    <h4>Escala de Morse (Risco de Queda)</h4>
-                    <div class="scale-display">
-                      <span class="scale-number" id="detail-morse">-</span>
-                      <span class="scale-max">/100</span>
-                    </div>
-                    <p class="scale-interpretation" id="detail-morse-risk">-</p>
-                  </div>
-
-                  <div class="scale-box braden">
-                    <h4>Escala de Braden (Úlcera por Pressão)</h4>
-                    <div class="scale-display">
-                      <span class="scale-number" id="detail-braden">-</span>
-                      <span class="scale-max">/23</span>
-                    </div>
-                    <p class="scale-interpretation" id="detail-braden-risk">-</p>
-                  </div>
-
-                  <div class="scale-box katz">
-                    <h4>Escala de Katz (Independência)</h4>
-                    <div class="scale-display">
-                      <span class="scale-number" id="detail-katz">-</span>
-                      <span class="scale-max">/6</span>
-                    </div>
-                    <p class="scale-interpretation" id="detail-katz-risk">-</p>
-                  </div>
-                </div>
-              </div>
-
-              <!-- MEDICATIONS -->
-              <div class="detail-section" data-section="medications">
-                <h3>Medicações em Uso</h3>
-                <div class="medications-list" id="detail-medications">
-                  <p style="color: var(--text-secondary);">-</p>
-                </div>
-                <button class="btn btn-primary" style="margin-top: var(--space-6);">
-                  <i class="fas fa-edit"></i> Atualizar Medicações
-                </button>
-              </div>
-
-              <!-- ALLERGIES -->
-              <div class="detail-section" data-section="allergies">
-                <h3>Alergias Conhecidas</h3>
-                <div class="allergies-list">
-                  <div class="allergy-item">
-                    <label>Medicamentosas:</label>
-                    <p id="detail-allergies-med">-</p>
-                  </div>
-                  <div class="allergy-item">
-                    <label>Alimentares:</label>
-                    <p id="detail-allergies-food">-</p>
-                  </div>
-                  <div class="allergy-item">
-                    <label>Outras:</label>
-                    <p id="detail-allergies-other">-</p>
-                  </div>
-                </div>
-              </div>
-
-              <!-- CLINICAL -->
-              <div class="detail-section" data-section="clinical">
-                <h3>Informações Clínicas</h3>
-                <div class="clinical-info">
-                  <div class="info-item">
-                    <label>Peso</label>
-                    <p id="detail-weight">-</p>
-                  </div>
-                  <div class="info-item">
-                    <label>Altura</label>
-                    <p id="detail-height">-</p>
-                  </div>
-                  <div class="info-item">
-                    <label>IMC</label>
-                    <p id="detail-imc">-</p>
-                  </div>
-                  <div class="info-item">
-                    <label>Plano de Saúde</label>
-                    <p id="detail-health-plan">-</p>
-                  </div>
-                </div>
-
-                <h3 style="margin-top: var(--space-8);">Observações Clínicas</h3>
-                <p id="detail-clinical-notes" style="color: var(--text-secondary); line-height: 1.6;">-</p>
-              </div>
-
-              <!-- ACTIVITIES -->
-              <div class="detail-section" data-section="activities">
-                <h3>Histórico de Atividades</h3>
-                <div class="activities-timeline" id="detail-activities">
-                  <p style="color: var(--text-secondary);">-</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="modal-footer">
-            <button class="btn btn-secondary" onclick="closeResidentDetail()">
-              <i class="fas fa-times"></i> Fechar
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <!-- ACTIVITIES PAGE -->
-      <div class="assistencial-page" id="page-activities">
-        <div class="container">
-          <div class="page-header">
-            <div>
-              <h2>Atividades Diárias</h2>
-              <p>Registre as atividades e cuidados prestados</p>
-            </div>
-            <button class="btn btn-primary" onclick="openActivityForm()">
-              <i class="fas fa-plus"></i> Nova Atividade
-            </button>
-          </div>
-
-          <div class="assistencial-section">
-            <div class="activities-feed" id="allActivities">
-              <div class="empty-state">
-                <i class="fas fa-inbox"></i>
-                <p>Nenhuma atividade registrada</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- CHAT PAGE -->
-      <div class="assistencial-page" id="page-chat">
-        <div class="container">
-          <div class="page-header">
-            <div>
-              <h2>Chat em Tempo Real</h2>
-              <p>Comunique-se com equipe e familiares</p>
-            </div>
-          </div>
-
-          <div class="chat-container">
-            <!-- CONTACTS LIST -->
-            <div class="chat-sidebar">
-              <div class="chat-search">
-                <i class="fas fa-search"></i>
-                <input type="text" placeholder="Buscar conversa...">
-              </div>
-              <div class="contacts-list" id="contactsList">
-                <div class="contact-item active">
-                  <div class="contact-avatar">J</div>
-                  <div class="contact-info">
-                    <p class="contact-name">João Silva</p>
-                    <small>Última mensagem hoje</small>
-                  </div>
-                  <span class="unread-badge">3</span>
-                </div>
-              </div>
-            </div>
-
-            <!-- CHAT AREA -->
-            <div class="chat-area">
-              <div class="chat-header">
-                <h3 id="chatTitle">João Silva</h3>
-                <small id="chatStatus">Online agora</small>
-              </div>
-
-              <div class="chat-messages" id="chatMessages">
-                <div class="message incoming">
-                  <p>Como está seu avó hoje?</p>
-                  <small>14:30</small>
-                </div>
-                <div class="message outgoing">
-                  <p>Bem! Fizemos o banho e a refeição normalmente.</p>
-                  <small>14:35</small>
-                </div>
-                <div class="message incoming">
-                  <p>Que ótimo! Qual foi o medicamento que administraram?</p>
-                  <small>14:40</small>
-                </div>
-              </div>
-
-              <div class="chat-input">
-                <input type="text" placeholder="Digite sua mensagem...">
-                <button>
-                  <i class="fas fa-paper-plane"></i>
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </main>
-
-  <script src="/js/assistencial-dashboard.js"></script>
+    <script src="../js/assistencial-dashboard.js"></script>
 </body>
 </html>

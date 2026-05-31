@@ -1,318 +1,553 @@
-/* ============================================
-   ASSISTENCIAL DASHBOARD - JAVASCRIPT
-   ============================================ */
+// ============================================
+// ASSISTENCIAL DASHBOARD - LÓGICA COMPLETA
+// ============================================
 
-const API_BASE = window.location.hostname === 'localhost'
-  ? 'http://localhost:3000/api'
-  : 'https://vivaris-care-production.up.railway.app/api';
-
-// STATE
 let state = {
-  token: localStorage.getItem('token'),
-  user: JSON.parse(localStorage.getItem('user') || 'null'),
-  residents: [],
-  selectedResident: null
+    user: null,
+    token: null,
+    residents: [],
+    currentResident: null,
+    allResidents: [],
+    filteredResidents: [],
+    timelineEvents: [],
+    currentPage: 'dashboard'
 };
 
-// INIT
-document.addEventListener('DOMContentLoaded', () => {
-  if (!state.token || !state.user || state.user.role !== 'assistencial') {
-    window.location.href = '/';
-    return;
-  }
+// ============================================
+// INICIALIZAÇÃO
+// ============================================
 
-  setupUser();
-  setupNavigation();
-  setupLogout();
-  setupDetailTabs();
-  loadAssistencialData();
+document.addEventListener('DOMContentLoaded', async () => {
+    try {
+        // Validar autenticação
+        const token = localStorage.getItem('token');
+        const user = JSON.parse(localStorage.getItem('user') || '{}');
+
+        if (!token || !user.id) {
+            window.location.href = '/';
+            return;
+        }
+
+        state.token = token;
+        state.user = user;
+
+        // Atualizar UI com dados do user
+        document.getElementById('userName').textContent = user.full_name || 'Usuário';
+
+        // Carregar dados
+        await loadResidents();
+        await loadAlerts();
+        loadTimelineSelector();
+
+        console.log('✅ Dashboard Assistencial carregado');
+    } catch (error) {
+        console.error('❌ Erro ao inicializar:', error);
+        alert('Erro ao carregar dashboard');
+    }
 });
 
 // ============================================
-// SETUP USER
+// CARREGAR RESIDENTES
 // ============================================
 
-function setupUser() {
-  document.getElementById('userName').textContent = state.user.full_name;
-  document.getElementById('userAvatar').textContent = state.user.full_name.charAt(0).toUpperCase();
+async function loadResidents() {
+    try {
+        // Buscar residentes do banco
+        const response = await fetch('/api/residents', {
+            headers: { 'Authorization': `Bearer ${state.token}` }
+        });
+
+        if (!response.ok) throw new Error('Erro ao buscar residentes');
+
+        const data = await response.json();
+        state.allResidents = data.data || [];
+        state.residents = [...state.allResidents];
+
+        renderResidents();
+    } catch (error) {
+        console.error('❌ Erro ao carregar residentes:', error);
+        document.getElementById('residentsGrid').innerHTML = `
+            <div class="alert-empty">
+                <i class="fas fa-exclamation-triangle"></i>
+                <p>Erro ao carregar residentes</p>
+            </div>
+        `;
+    }
 }
 
 // ============================================
-// NAVIGATION
+// RENDERIZAR CARDS DE RESIDENTES
 // ============================================
 
-function setupNavigation() {
-  const navItems = document.querySelectorAll('.nav-item');
+function renderResidents() {
+    const grid = document.getElementById('residentsGrid');
+    
+    if (!state.residents || state.residents.length === 0) {
+        grid.innerHTML = `
+            <div class="alert-empty" style="grid-column: 1/-1;">
+                <i class="fas fa-inbox"></i>
+                <p>Nenhum residente encontrado</p>
+            </div>
+        `;
+        return;
+    }
 
-  navItems.forEach(item => {
-    item.addEventListener('click', (e) => {
-      if (item.classList.contains('logout-btn')) return;
-      
-      e.preventDefault();
-      const page = item.dataset.page;
-      if (page) {
-        switchPage(page);
-        
-        navItems.forEach(n => n.classList.remove('active'));
-        item.classList.add('active');
-      }
+    grid.innerHTML = state.residents.map(resident => {
+        const risco = calculateRisk(resident);
+        const status = getStatus(resident);
+
+        return `
+            <div class="resident-card">
+                <div class="resident-card-header">
+                    <div class="resident-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="resident-name">${resident.full_name}</div>
+                    <div class="resident-quarto">Quarto ${resident.room || 'N/A'}</div>
+                </div>
+                <div class="resident-card-body">
+                    <div class="resident-info">
+                        <div class="info-item">
+                            <span class="info-label">Idade</span>
+                            <span class="info-value">${calculateAge(resident.date_of_birth)} anos</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Risco de Queda</span>
+                            <span class="risk-badge risk-${risco.fall.toLowerCase()}">${risco.fall}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Úlcera de Pressão</span>
+                            <span class="risk-badge risk-${risco.ulcer.toLowerCase()}">${risco.ulcer}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Status</span>
+                            <span class="status-badge status-${status.toLowerCase()}">${capitalizar(status)}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="resident-card-footer">
+                    <button class="resident-card-footer button btn-timeline" onclick="openTimeline('${resident.id}')">
+                        <i class="fas fa-clock"></i> Timeline
+                    </button>
+                    <button class="resident-card-footer button btn-details" onclick="viewResidentDetails('${resident.id}')">
+                        <i class="fas fa-info-circle"></i> Detalhes
+                    </button>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+// ============================================
+// CALCULAR RISCO (com base em escalas)
+// ============================================
+
+function calculateRisk(resident) {
+    let fall = 'Baixo';
+    let ulcer = 'Baixo';
+
+    // Morse (Risco de Queda)
+    if (resident.scales?.morse) {
+        const morse = resident.scales.morse;
+        if (morse >= 51) fall = 'Alto';
+        else if (morse >= 25) fall = 'Moderado';
+    }
+
+    // Braden (Risco de Úlcera)
+    if (resident.scales?.braden) {
+        const braden = resident.scales.braden;
+        if (braden <= 12) ulcer = 'Alto';
+        else if (braden <= 14) ulcer = 'Moderado';
+    }
+
+    return { fall, ulcer };
+}
+
+function getStatus(resident) {
+    const risco = calculateRisk(resident);
+    if (risco.fall === 'Alto' || risco.ulcer === 'Alto') return 'Crítico';
+    if (risco.fall === 'Moderado' || risco.ulcer === 'Moderado') return 'Observação';
+    return 'Estável';
+}
+
+// ============================================
+// CALCULAR IDADE
+// ============================================
+
+function calculateAge(dateOfBirth) {
+    if (!dateOfBirth) return 'N/A';
+    const today = new Date();
+    const birthDate = new Date(dateOfBirth);
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const monthDiff = today.getMonth() - birthDate.getMonth();
+    
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+        age--;
+    }
+    
+    return age;
+}
+
+// ============================================
+// CARREGAR ALERTAS CRÍTICOS
+// ============================================
+
+async function loadAlerts() {
+    const alertsContainer = document.getElementById('alertsContainer');
+    const alerts = [];
+
+    // Verificar residentes com risco crítico
+    state.allResidents.forEach(resident => {
+        const risco = calculateRisk(resident);
+        const status = getStatus(resident);
+
+        if (status === 'Crítico') {
+            if (risco.fall === 'Alto') {
+                alerts.push({
+                    type: 'danger',
+                    icon: 'fa-exclamation-circle',
+                    title: `${resident.full_name} - RISCO ALTO DE QUEDA`,
+                    message: `Morse: ${resident.scales?.morse || 'N/A'}`
+                });
+            }
+
+            if (risco.ulcer === 'Alto') {
+                alerts.push({
+                    type: 'danger',
+                    icon: 'fa-exclamation-circle',
+                    title: `${resident.full_name} - RISCO ALTO DE ÚLCERA`,
+                    message: `Braden: ${resident.scales?.braden || 'N/A'}`
+                });
+            }
+        }
     });
-  });
+
+    if (alerts.length === 0) {
+        alertsContainer.innerHTML = `
+            <div class="alert-empty">
+                <i class="fas fa-check-circle"></i>
+                <p>Nenhum alerta crítico</p>
+            </div>
+        `;
+        return;
+    }
+
+    alertsContainer.innerHTML = alerts.map(alert => `
+        <div class="alert-card ${alert.type === 'danger' ? 'danger' : 'warning'}">
+            <div class="alert-icon">
+                <i class="fas ${alert.icon}"></i>
+            </div>
+            <div class="alert-content">
+                <h3>${alert.title}</h3>
+                <p>${alert.message}</p>
+            </div>
+        </div>
+    `).join('');
 }
+
+// ============================================
+// FILTROS
+// ============================================
+
+function applyFilters() {
+    const risco = document.getElementById('filterRisco')?.value || '';
+    const status = document.getElementById('filterStatus')?.value || '';
+    const search = document.getElementById('searchResident')?.value?.toLowerCase() || '';
+
+    state.residents = state.allResidents.filter(resident => {
+        const residentRisco = calculateRisk(resident);
+        const residentStatus = getStatus(resident);
+        const nome = resident.full_name?.toLowerCase() || '';
+        const quarto = resident.room?.toString() || '';
+
+        const matchRisco = !risco || 
+            (risco === 'alto' && residentRisco.fall === 'Alto') ||
+            (risco === 'moderado' && residentRisco.fall === 'Moderado') ||
+            (risco === 'baixo' && residentRisco.fall === 'Baixo');
+
+        const matchStatus = !status || residentStatus.toLowerCase() === status;
+        const matchSearch = !search || nome.includes(search) || quarto.includes(search);
+
+        return matchRisco && matchStatus && matchSearch;
+    });
+
+    renderResidents();
+}
+
+// ============================================
+// TIMELINE
+// ============================================
+
+function loadTimelineSelector() {
+    const select = document.getElementById('timelineResidentSelect');
+    select.innerHTML = '<option value="">-- Escolha um residente --</option>' +
+        state.allResidents.map(r => `<option value="${r.id}">${r.full_name}</option>`).join('');
+}
+
+async function openTimeline(residentId) {
+    state.currentResident = state.allResidents.find(r => r.id === residentId);
+    document.getElementById('timelineResidentSelect').value = residentId;
+    switchPage('timeline');
+    await loadTimeline();
+}
+
+async function loadTimeline() {
+    const select = document.getElementById('timelineResidentSelect');
+    const residentId = select.value;
+
+    if (!residentId) {
+        document.getElementById('timelineFeed').innerHTML = `
+            <div class="empty-state">
+                <i class="fas fa-inbox"></i>
+                <p>Selecione um residente para ver a timeline</p>
+            </div>
+        `;
+        return;
+    }
+
+    try {
+        const response = await fetch(`/api/timeline/${residentId}`, {
+            headers: { 'Authorization': `Bearer ${state.token}` }
+        });
+
+        if (!response.ok) throw new Error('Erro ao buscar timeline');
+
+        const data = await response.json();
+        state.timelineEvents = data.data || [];
+
+        renderTimeline();
+    } catch (error) {
+        console.error('❌ Erro ao carregar timeline:', error);
+        document.getElementById('timelineFeed').innerHTML = `
+            <div class="empty-state">
+                <i class="fas fa-exclamation-triangle"></i>
+                <p>Erro ao carregar timeline</p>
+            </div>
+        `;
+    }
+}
+
+function renderTimeline() {
+    const feed = document.getElementById('timelineFeed');
+
+    if (!state.timelineEvents || state.timelineEvents.length === 0) {
+        feed.innerHTML = `
+            <div class="empty-state">
+                <i class="fas fa-inbox"></i>
+                <p>Nenhum evento na timeline</p>
+            </div>
+        `;
+        return;
+    }
+
+    feed.innerHTML = state.timelineEvents.map(event => `
+        <div class="timeline-event">
+            <div class="event-header">
+                <div>
+                    <span class="event-type-badge">${capitalizar(event.event_type)}</span>
+                </div>
+                <span class="event-time">${formatDate(event.created_at)}</span>
+            </div>
+            <h3 class="event-title">${event.title}</h3>
+            <p class="event-content">${event.content}</p>
+            <div class="event-meta">
+                <span>👤 ${event.author_name || 'Sistema'}</span>
+                <span>🎯 ${capitalizar(event.audience)}</span>
+                ${event.is_critical ? '<span style="color: #ef4444;">🚨 CRÍTICO</span>' : ''}
+            </div>
+            <div class="event-footer">
+                <div class="event-action" onclick="openComments('${event.id}')">
+                    <i class="fas fa-comment"></i>
+                    <span>Comentar</span>
+                </div>
+                <div class="event-action" onclick="toggleReaction('${event.id}', '👍')">
+                    <i class="fas fa-thumbs-up"></i>
+                    <span>Reagir</span>
+                </div>
+            </div>
+        </div>
+    `).join('');
+}
+
+// ============================================
+// NOVO EVENTO MODAL
+// ============================================
+
+function openNewEventModal() {
+    if (!state.currentResident) {
+        alert('Selecione um residente primeiro!');
+        return;
+    }
+    document.getElementById('newEventModal').classList.add('active');
+}
+
+function closeModal(modalId) {
+    document.getElementById(modalId).classList.remove('active');
+}
+
+async function saveNewEvent() {
+    if (!state.currentResident) {
+        alert('Erro: residente não selecionado');
+        return;
+    }
+
+    const eventType = document.getElementById('eventType').value;
+    const title = document.getElementById('eventTitle').value;
+    const content = document.getElementById('eventContent').value;
+    const audience = document.getElementById('eventAudience').value;
+    const isCritical = document.getElementById('eventCritical').checked;
+
+    if (!title || !content) {
+        alert('Preencha título e descrição');
+        return;
+    }
+
+    try {
+        const response = await fetch('/api/timeline', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${state.token}`
+            },
+            body: JSON.stringify({
+                resident_id: state.currentResident.id,
+                event_type: eventType,
+                title,
+                content,
+                audience,
+                is_critical: isCritical,
+                tags: []
+            })
+        });
+
+        if (!response.ok) throw new Error('Erro ao salvar evento');
+
+        // Limpar form
+        document.getElementById('eventTitle').value = '';
+        document.getElementById('eventContent').value = '';
+        document.getElementById('eventCritical').checked = false;
+
+        // Fechar modal
+        closeModal('newEventModal');
+
+        // Recarregar timeline
+        await loadTimeline();
+
+        alert('✅ Evento criado com sucesso!');
+    } catch (error) {
+        console.error('❌ Erro ao salvar evento:', error);
+        alert('Erro ao salvar evento');
+    }
+}
+
+// ============================================
+// COMENTÁRIOS
+// ============================================
+
+async function openComments(eventId) {
+    alert('Funcionalidade de comentários em desenvolvimento');
+    // TODO: Implementar interface de comentários
+}
+
+async function toggleReaction(eventId, reaction) {
+    try {
+        const response = await fetch(`/api/timeline/${eventId}/reactions`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${state.token}`
+            },
+            body: JSON.stringify({ reaction })
+        });
+
+        if (!response.ok) throw new Error('Erro ao adicionar reação');
+
+        await loadTimeline();
+    } catch (error) {
+        console.error('❌ Erro ao adicionar reação:', error);
+    }
+}
+
+// ============================================
+// NAVEGAÇÃO DE PÁGINAS
+// ============================================
 
 function switchPage(pageName) {
-  document.querySelectorAll('.assistencial-page').forEach(page => {
-    page.classList.remove('active');
-  });
+    // Remover active de todas as páginas
+    document.querySelectorAll('.assistencial-page').forEach(page => {
+        page.classList.remove('active');
+    });
 
-  const page = document.getElementById(`page-${pageName}`);
-  if (page) {
-    page.classList.add('active');
+    // Remover active de todos os nav items
+    document.querySelectorAll('.nav-item').forEach(item => {
+        item.classList.remove('active');
+    });
 
+    // Ativar página selecionada
+    const page = document.getElementById(`page-${pageName}`);
+    if (page) {
+        page.classList.add('active');
+    }
+
+    // Ativar nav item
+    document.querySelector(`.nav-item[onclick*="${pageName}"]`)?.classList.add('active');
+
+    // Atualizar title
     const titles = {
-      'dashboard': 'Dashboard',
-      'residents': 'Residentes',
-      'activities': 'Atividades Diárias',
-      'chat': 'Chat em Tempo Real'
+        'dashboard': 'Dashboard Assistencial',
+        'residents': 'Todos os Residentes',
+        'timeline': 'Timeline Clínica',
+        'medicacoes': 'Medicações',
+        'relatorios': 'Relatórios'
     };
 
     document.getElementById('pageTitle').textContent = titles[pageName] || 'VIVARIS CARE';
-  }
+    state.currentPage = pageName;
+}
+
+function openTimeline(residentId) {
+    state.currentResident = state.allResidents.find(r => r.id === residentId);
+    document.getElementById('timelineResidentSelect').value = residentId;
+    switchPage('timeline');
+}
+
+function viewResidentDetails(residentId) {
+    alert('Página de detalhes do residente em desenvolvimento');
+}
+
+function toggleView() {
+    alert('Toggle de visualização em desenvolvimento');
 }
 
 // ============================================
 // LOGOUT
 // ============================================
 
-function setupLogout() {
-  document.getElementById('logoutBtn').addEventListener('click', () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    window.location.href = '/';
-  });
-}
-
-// ============================================
-// LOAD DATA
-// ============================================
-
-async function loadAssistencialData() {
-  try {
-    const residentsRes = await fetch(`${API_BASE}/residents`, {
-      headers: { 'Authorization': `Bearer ${state.token}` }
-    });
-    
-    if (residentsRes.ok) {
-      state.residents = await residentsRes.json();
-      displayDashboardResidents();
-      displayResidentsGrid();
-      displayRecentActivities();
-      updateStats();
+function logout() {
+    if (confirm('Tem certeza que deseja sair?')) {
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        window.location.href = '/';
     }
-  } catch (error) {
-    console.error('Error loading data:', error);
-  }
 }
 
 // ============================================
-// DISPLAY DASHBOARD RESIDENTS
+// HELPERS
 // ============================================
 
-function displayDashboardResidents() {
-  const list = document.getElementById('dashboardResidentsList');
-
-  if (!state.residents || state.residents.length === 0) {
-    list.innerHTML = '<div class="empty-state"><i class="fas fa-inbox"></i><p>Nenhum residente disponível</p></div>';
-    return;
-  }
-
-  list.innerHTML = state.residents.slice(0, 5).map(r => `
-    <div class="resident-card" style="padding: var(--space-4); border: 1px solid var(--border-color); border-radius: var(--border-radius-md); cursor: pointer; transition: all var(--transition-fast);" onclick="openResidentDetail('${r.id}')">
-      <div style="font-weight: var(--font-weight-semibold); color: var(--text-primary); margin-bottom: var(--space-1);">${r.full_name}</div>
-      <div style="font-size: var(--text-sm); color: var(--text-tertiary);">
-        <i class="fas fa-birthday-cake"></i> ${new Date(r.birth_date).toLocaleDateString('pt-BR')}
-      </div>
-    </div>
-  `).join('');
+function capitalizar(str) {
+    if (!str) return '';
+    return str.charAt(0).toUpperCase() + str.slice(1).replace(/_/g, ' ');
 }
 
-// ============================================
-// DISPLAY RESIDENTS GRID
-// ============================================
-
-function displayResidentsGrid() {
-  const grid = document.getElementById('residentsList');
-
-  if (!state.residents || state.residents.length === 0) {
-    grid.innerHTML = '<div class="empty-state"><i class="fas fa-inbox"></i><p>Nenhum residente encontrado</p></div>';
-    return;
-  }
-
-  grid.innerHTML = state.residents.map(r => `
-    <div class="resident-card" onclick="openResidentDetail('${r.id}')" style="cursor: pointer;">
-      <div class="resident-avatar">${r.full_name.charAt(0).toUpperCase()}</div>
-      <div class="resident-name">${r.full_name}</div>
-      <div class="resident-meta">
-        <strong>Data de Nasc.:</strong> ${new Date(r.birth_date).toLocaleDateString('pt-BR')}<br>
-        <strong>CPF:</strong> ${r.cpf || 'N/A'}<br>
-        <strong>Status:</strong> Ativo
-      </div>
-    </div>
-  `).join('');
-}
-
-// ============================================
-// OPEN RESIDENT DETAIL
-// ============================================
-
-function openResidentDetail(residentId) {
-  const resident = state.residents.find(r => r.id === residentId);
-  
-  if (!resident) return;
-
-  state.selectedResident = resident;
-
-  // Preencher dados
-  document.getElementById('residentDetailName').textContent = resident.full_name;
-  document.getElementById('residentDetailInfo').textContent = `${resident.gender === 'M' ? 'Masculino' : 'Feminino'} • ${new Date(resident.birth_date).toLocaleDateString('pt-BR')}`;
-
-  // Overview
-  document.getElementById('detail-birth').textContent = new Date(resident.birth_date).toLocaleDateString('pt-BR');
-  document.getElementById('detail-gender').textContent = resident.gender === 'M' ? 'Masculino' : 'Feminino';
-  document.getElementById('detail-phone').textContent = resident.phone_main || '-';
-  document.getElementById('detail-responsible').textContent = resident.responsible_name || '-';
-  document.getElementById('detail-diagnoses').textContent = resident.diagnoses || '-';
-  document.getElementById('detail-history').textContent = resident.chronic_diseases || '-';
-
-  // Scales (simulated)
-  document.getElementById('detail-morse').textContent = '45';
-  document.getElementById('detail-morse-risk').textContent = '🟡 RISCO MÉDIO - Implementar precauções moderadas';
-  
-  document.getElementById('detail-braden').textContent = '18';
-  document.getElementById('detail-braden-risk').textContent = '🟠 RISCO MODERADO - Aplicar protocolo de prevenção';
-  
-  document.getElementById('detail-katz').textContent = '4';
-  document.getElementById('detail-katz-risk').textContent = '🟡 SEMI-DEPENDENTE - Necessita assistência parcial';
-
-  // Medications
-  const medsList = resident.medications ? resident.medications.split('\n').filter(m => m.trim()) : [];
-  document.getElementById('detail-medications').innerHTML = medsList.length > 0 
-    ? medsList.map(m => `<div class="medication-item">${m}</div>`).join('')
-    : '<p style="color: var(--text-secondary);">-</p>';
-
-  // Allergies
-  document.getElementById('detail-allergies-med').textContent = resident.allergies_medications || '-';
-  document.getElementById('detail-allergies-food').textContent = resident.allergies_food || '-';
-  document.getElementById('detail-allergies-other').textContent = resident.allergies_other || '-';
-
-  // Clinical
-  document.getElementById('detail-weight').textContent = resident.weight ? `${resident.weight} kg` : '-';
-  document.getElementById('detail-height').textContent = resident.height ? `${resident.height} cm` : '-';
-  document.getElementById('detail-imc').textContent = resident.imc ? resident.imc : '-';
-  document.getElementById('detail-health-plan').textContent = resident.health_plan_name || '-';
-  document.getElementById('detail-clinical-notes').textContent = resident.clinical_notes || '-';
-
-  // Activities (simulated)
-  document.getElementById('detail-activities').innerHTML = `
-    <div class="timeline-item">
-      <div class="timeline-time">Hoje - 14:30</div>
-      <div class="timeline-desc">Banho realizado com sucesso</div>
-    </div>
-    <div class="timeline-item">
-      <div class="timeline-time">Hoje - 12:00</div>
-      <div class="timeline-desc">Almoço servido - Paciente comeu bem</div>
-    </div>
-    <div class="timeline-item">
-      <div class="timeline-time">Hoje - 08:00</div>
-      <div class="timeline-desc">Medicações da manhã administradas</div>
-    </div>
-  `;
-
-  // Show detail page
-  document.getElementById('page-resident-detail').style.display = 'block';
-  document.querySelectorAll('.assistencial-page').forEach(p => p.classList.remove('active'));
-  document.getElementById('page-resident-detail').classList.add('active');
-
-  // Reset tab
-  document.querySelectorAll('.detail-tab').forEach(t => t.classList.remove('active'));
-  document.querySelector('[data-section="overview"]').classList.add('active');
-  document.querySelectorAll('[data-section="overview"]').forEach(s => s.classList.add('active'));
-}
-
-// ============================================
-// CLOSE RESIDENT DETAIL
-// ============================================
-
-function closeResidentDetail() {
-  document.getElementById('page-resident-detail').style.display = 'none';
-  switchPage('residents');
-}
-
-// ============================================
-// SETUP DETAIL TABS
-// ============================================
-
-function setupDetailTabs() {
-  document.querySelectorAll('.detail-tab').forEach(tab => {
-    tab.addEventListener('click', () => {
-      const section = tab.dataset.section;
-
-      document.querySelectorAll('.detail-tab').forEach(t => t.classList.remove('active'));
-      tab.classList.add('active');
-
-      document.querySelectorAll('[data-section]').forEach(s => {
-        if (s.classList.contains('detail-section')) {
-          s.classList.remove('active');
-        }
-      });
-
-      document.querySelectorAll(`[data-section="${section}"]`).forEach(s => {
-        if (s.classList.contains('detail-section')) {
-          s.classList.add('active');
-        }
-      });
+function formatDate(dateString) {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    return date.toLocaleDateString('pt-BR', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
     });
-  });
-}
-
-// ============================================
-// DISPLAY RECENT ACTIVITIES
-// ============================================
-
-function displayRecentActivities() {
-  const feed = document.getElementById('recentActivities');
-
-  const activities = [
-    { icon: '💊', title: 'Medicações administradas', time: 'Hoje - 08:00' },
-    { icon: '🚿', title: 'Banho realizado', time: 'Hoje - 14:30' },
-    { icon: '🍽️', title: 'Refeição servida', time: 'Hoje - 12:00' }
-  ];
-
-  feed.innerHTML = activities.map(a => `
-    <div class="activity-item">
-      <div class="activity-icon">${a.icon}</div>
-      <div class="activity-content">
-        <div class="activity-title">${a.title}</div>
-        <div class="activity-time">${a.time}</div>
-      </div>
-    </div>
-  `).join('');
-}
-
-// ============================================
-// UPDATE STATS
-// ============================================
-
-function updateStats() {
-  document.getElementById('statResidents').textContent = state.residents.length;
-  document.getElementById('statAlerts').textContent = '2';
-  document.getElementById('statPending').textContent = '4';
-}
-
-// ============================================
-// OPEN ACTIVITY FORM
-// ============================================
-
-function openActivityForm() {
-  alert('Formulário de atividade em desenvolvimento');
 }
