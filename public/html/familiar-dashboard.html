@@ -1,388 +1,280 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>VIVARIS CARE - Acompanhe seu Parente</title>
-  <link rel="stylesheet" href="/css/design-system.css">
-  <link rel="stylesheet" href="/css/familiar-dashboard.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VIVARIS CARE - Acompanhamento Familiar</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/familiar-dashboard.css">
 </head>
-<body class="familiar-dashboard-body">
-  <!-- MOBILE HEADER -->
-  <header class="familiar-header">
-    <div class="header-top">
-      <div class="header-logo">
-        <i class="fas fa-heart"></i>
-        <span>VIVARIS CARE</span>
-      </div>
-      <div class="header-menu">
-        <button class="btn-menu" id="menuBtn">
-          <i class="fas fa-bars"></i>
-        </button>
-      </div>
-    </div>
-  </header>
-
-  <!-- SIDEBAR MENU -->
-  <aside class="familiar-sidebar" id="sidebarMenu">
-    <div class="sidebar-close">
-      <button onclick="toggleMenu()">
-        <i class="fas fa-times"></i>
-      </button>
-    </div>
-
-    <nav class="sidebar-nav">
-      <a href="#" class="nav-item active" data-page="dashboard">
-        <i class="fas fa-home"></i>
-        <span>Início</span>
-      </a>
-      <a href="#" class="nav-item" data-page="activities">
-        <i class="fas fa-calendar-day"></i>
-        <span>Atividades Hoje</span>
-      </a>
-      <a href="#" class="nav-item" data-page="risks">
-        <i class="fas fa-shield-alt"></i>
-        <span>Bem-estar</span>
-      </a>
-      <a href="#" class="nav-item" data-page="gallery">
-        <i class="fas fa-images"></i>
-        <span>Fotos & Vídeos</span>
-      </a>
-      <a href="#" class="nav-item" data-page="chat">
-        <i class="fas fa-comments"></i>
-        <span>Chat</span>
-        <span class="nav-badge" id="chatBadge">2</span>
-      </a>
-      <a href="#" class="nav-item" data-page="medical-notes">
-        <i class="fas fa-file-medical"></i>
-        <span>Atualizações Médicas</span>
-      </a>
-    </nav>
-
-    <div class="sidebar-footer">
-      <button class="nav-item logout-btn" id="logoutBtn">
-        <i class="fas fa-sign-out-alt"></i>
-        <span>Sair</span>
-      </button>
-    </div>
-  </aside>
-
-  <!-- MAIN CONTENT -->
-  <main class="familiar-main-content">
-    <!-- PAGES CONTAINER -->
-    <div class="familiar-pages">
-      <!-- DASHBOARD PAGE -->
-      <div class="familiar-page active" id="page-dashboard">
-        <!-- RESIDENT CARD -->
-        <div class="resident-header">
-          <div class="resident-avatar" id="residentAvatar">J</div>
-          <div class="resident-header-info">
-            <h1 id="residentName">João Silva</h1>
-            <p id="residentStatus">Tudo bem! 🟢</p>
-          </div>
-        </div>
-
-        <div class="container">
-          <!-- WELL-BEING STATUS -->
-          <section class="familiar-section wellness-card">
-            <h2>Como está hoje?</h2>
-            <div class="wellness-grid">
-              <div class="wellness-item">
-                <div class="wellness-icon">❤️</div>
-                <div class="wellness-info">
-                  <p class="wellness-label">Saúde Geral</p>
-                  <p class="wellness-status" id="health-status">Ótima</p>
-                </div>
-              </div>
-              <div class="wellness-item">
-                <div class="wellness-icon">😊</div>
-                <div class="wellness-info">
-                  <p class="wellness-label">Disposição</p>
-                  <p class="wellness-status" id="disposition-status">Boa</p>
-                </div>
-              </div>
-              <div class="wellness-item">
-                <div class="wellness-icon">😴</div>
-                <div class="wellness-info">
-                  <p class="wellness-label">Sono</p>
-                  <p class="wellness-status" id="sleep-status">Normal</p>
-                </div>
-              </div>
-              <div class="wellness-item">
-                <div class="wellness-icon">🍽️</div>
-                <div class="wellness-info">
-                  <p class="wellness-label">Apetite</p>
-                  <p class="wellness-status" id="appetite-status">Excelente</p>
-                </div>
-              </div>
+<body>
+    <!-- HEADER MOBILE -->
+    <header class="familiar-header">
+        <div class="header-content">
+            <div class="logo-section">
+                <i class="fas fa-heart"></i>
+                <span class="logo-text">VIVARIS CARE</span>
             </div>
-          </section>
-
-          <!-- TODAY'S ACTIVITIES -->
-          <section class="familiar-section">
-            <div class="section-header">
-              <h2>Atividades de Hoje</h2>
-              <a href="#" class="link-more" onclick="switchPage('activities'); return false;">Ver mais →</a>
-            </div>
-            <div class="activities-timeline" id="todayActivities">
-              <div class="empty-state">
-                <i class="fas fa-inbox"></i>
-                <p>Nenhuma atividade registrada</p>
-              </div>
-            </div>
-          </section>
-
-          <!-- RISKS IN SIMPLE LANGUAGE -->
-          <section class="familiar-section risks-section">
-            <div class="section-header">
-              <h2>Bem-estar & Cuidados</h2>
-              <a href="#" class="link-more" onclick="switchPage('risks'); return false;">Detalhes →</a>
-            </div>
-            <div class="risks-grid" id="risksOverview">
-              <div class="risk-card safe">
-                <div class="risk-icon">🚶</div>
-                <div class="risk-content">
-                  <p class="risk-title">Equilíbrio</p>
-                  <p class="risk-description">Seu parente pode se movimentar com cuidado normal</p>
-                </div>
-              </div>
-              <div class="risk-card safe">
-                <div class="risk-icon">💪</div>
-                <div class="risk-content">
-                  <p class="risk-title">Pele</p>
-                  <p class="risk-description">Cuidados de rotina aplicados regularmente</p>
-                </div>
-              </div>
-              <div class="risk-card">
-                <div class="risk-icon">🧠</div>
-                <div class="risk-content">
-                  <p class="risk-title">Independência</p>
-                  <p class="risk-description">Consegue cuidar de si com alguma ajuda</p>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          <!-- QUICK ACTIONS -->
-          <section class="familiar-section">
-            <h2>Ações Rápidas</h2>
-            <div class="quick-actions-grid">
-              <button class="quick-action-btn" onclick="switchPage('chat')">
-                <i class="fas fa-comments"></i>
-                <span>Enviar Mensagem</span>
-              </button>
-              <button class="quick-action-btn" onclick="switchPage('gallery')">
-                <i class="fas fa-camera"></i>
-                <span>Ver Fotos</span>
-              </button>
-              <button class="quick-action-btn" onclick="switchPage('medical-notes')">
-                <i class="fas fa-stethoscope"></i>
-                <span>Ver Médico</span>
-              </button>
-              <button class="quick-action-btn" onclick="openEmergency()">
-                <i class="fas fa-phone"></i>
-                <span>Emergência</span>
-              </button>
-            </div>
-          </section>
-
-          <!-- MEDICAL UPDATE -->
-          <section class="familiar-section medical-update">
-            <div class="section-header">
-              <h2>Última Atualização Médica</h2>
-            </div>
-            <div class="medical-note" id="latestMedicalNote">
-              <div class="medical-date">Hoje - 10:30</div>
-              <div class="medical-doctor">Dr. Silva</div>
-              <p class="medical-text">Seu parente está evoluindo muito bem! Os medicamentos estão fazendo efeito. Continue com a medicação prescrita e mantenha os cuidados de higiene.</p>
-              <div class="medical-tags">
-                <span class="tag">✅ Medicações em dia</span>
-                <span class="tag">✅ Alimentação adequada</span>
-              </div>
-            </div>
-          </section>
-        </div>
-      </div>
-
-      <!-- ACTIVITIES PAGE -->
-      <div class="familiar-page" id="page-activities">
-        <div class="container">
-          <div class="page-header">
-            <h2>Atividades de Hoje</h2>
-            <p>Tudo que seu parente fez hoje</p>
-          </div>
-
-          <div class="familiar-section">
-            <div class="activities-full-list" id="activitiesList">
-              <div class="empty-state">
-                <i class="fas fa-inbox"></i>
-                <p>Nenhuma atividade registrada</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- RISKS PAGE -->
-      <div class="familiar-page" id="page-risks">
-        <div class="container">
-          <div class="page-header">
-            <h2>Bem-estar & Cuidados</h2>
-            <p>Entenda os cuidados necessários</p>
-          </div>
-
-          <div class="familiar-section">
-            <h3>Sobre o Bem-estar</h3>
-            <p class="info-text">Aqui você encontra informações sobre como está a saúde e o bem-estar do seu parente, traduzidas em linguagem simples.</p>
-
-            <div class="risks-detailed-grid" id="risksDetailed">
-              <div class="risk-detail-card safe">
-                <h4>Risco de Queda</h4>
-                <div class="risk-meter">
-                  <div class="meter-label">BAIXO</div>
-                </div>
-                <p class="risk-explanation">Seu parente tem baixo risco de cair. Ele consegue se mover normalmente, mas sempre é bom tomar cuidado com pisos molhados e escadas.</p>
-                <p class="risk-action">✅ Continue com as precauções normais de segurança na casa</p>
-              </div>
-
-              <div class="risk-detail-card moderate">
-                <h4>Úlcera por Pressão</h4>
-                <div class="risk-meter">
-                  <div class="meter-label">MODERADO</div>
-                </div>
-                <p class="risk-explanation">A equipe está cuidando para evitar feridas na pele. Seu parente é virado a cada 2 horas durante o dia.</p>
-                <p class="risk-action">✅ A equipe realiza os cuidados necessários regularmente</p>
-              </div>
-
-              <div class="risk-detail-card semi">
-                <h4>Independência</h4>
-                <div class="risk-meter">
-                  <div class="meter-label">SEMI-DEPENDENTE</div>
-                </div>
-                <p class="risk-explanation">Seu parente consegue fazer algumas atividades sozinho (como banho e refeições) mas precisa de ajuda em outras.</p>
-                <p class="risk-action">✅ A equipe oferece ajuda conforme necessário</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- GALLERY PAGE -->
-      <div class="familiar-page" id="page-gallery">
-        <div class="container">
-          <div class="page-header">
-            <h2>Fotos & Vídeos</h2>
-            <p>Momentos especiais do seu parente</p>
-          </div>
-
-          <div class="familiar-section">
-            <div class="gallery-grid" id="galleryItems">
-              <div class="empty-state">
-                <i class="fas fa-image"></i>
-                <p>Nenhuma foto ou vídeo disponível</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- CHAT PAGE -->
-      <div class="familiar-page" id="page-chat">
-        <div class="container">
-          <div class="page-header">
-            <h2>Chat com Equipe</h2>
-            <p>Comunicação em tempo real</p>
-          </div>
-
-          <div class="familiar-section chat-section">
-            <div class="chat-container">
-              <div class="chat-messages" id="chatMessages">
-                <div class="message incoming">
-                  <div class="message-avatar">E</div>
-                  <div class="message-content">
-                    <p>Olá! Seu parente acabou de terminar o almoço. Comeu muito bem! 😊</p>
-                    <small>14:30</small>
-                  </div>
-                </div>
-                <div class="message outgoing">
-                  <div class="message-content">
-                    <p>Que ótimo! Obrigado por me atualizar!</p>
-                    <small>14:35</small>
-                  </div>
-                </div>
-                <div class="message incoming">
-                  <div class="message-avatar">E</div>
-                  <div class="message-content">
-                    <p>Estamos aqui para qualquer dúvida. Quer falar com o médico?</p>
-                    <small>14:40</small>
-                  </div>
-                </div>
-              </div>
-
-              <div class="chat-input-area">
-                <input type="text" id="chatInput" placeholder="Escreva uma mensagem..." class="chat-input">
-                <button class="chat-send-btn">
-                  <i class="fas fa-paper-plane"></i>
+            <div class="header-right">
+                <button class="notification-btn" onclick="toggleNotifications()">
+                    <i class="fas fa-bell"></i>
+                    <span class="notification-badge" id="notificationBadge">0</span>
                 </button>
-              </div>
+                <button class="menu-btn" onclick="toggleMenu()">
+                    <i class="fas fa-bars"></i>
+                </button>
             </div>
-          </div>
         </div>
-      </div>
+    </header>
 
-      <!-- MEDICAL NOTES PAGE -->
-      <div class="familiar-page" id="page-medical-notes">
-        <div class="container">
-          <div class="page-header">
-            <h2>Atualizações Médicas</h2>
-            <p>Histórico de observações do médico</p>
-          </div>
+    <!-- SIDEBAR MOBILE -->
+    <aside class="familiar-menu" id="familiarMenu">
+        <div class="menu-header">
+            <h3>Menu</h3>
+            <button class="close-menu" onclick="toggleMenu()">×</button>
+        </div>
+        <nav class="menu-items">
+            <a href="#" class="menu-item active" onclick="switchPage('home'); return false;">
+                <i class="fas fa-home"></i> Home
+            </a>
+            <a href="#" class="menu-item" onclick="switchPage('timeline'); return false;">
+                <i class="fas fa-clock"></i> Timeline
+            </a>
+            <a href="#" class="menu-item" onclick="switchPage('solicitacoes'); return false;">
+                <i class="fas fa-comment-dots"></i> Solicitações
+            </a>
+            <a href="#" class="menu-item" onclick="switchPage('momentos'); return false;">
+                <i class="fas fa-images"></i> Momentos
+            </a>
+            <a href="#" class="menu-item" onclick="switchPage('perfil'); return false;">
+                <i class="fas fa-user"></i> Perfil
+            </a>
+        </nav>
+        <button class="logout-btn" onclick="logout()">
+            <i class="fas fa-sign-out-alt"></i> Sair
+        </button>
+    </aside>
 
-          <div class="familiar-section">
-            <div class="medical-notes-list" id="medicalNotesList">
-              <div class="medical-note-item">
-                <div class="medical-header">
-                  <div class="medical-doctor-name">Dr. Carlos Silva</div>
-                  <div class="medical-date-time">Hoje - 10:30</div>
-                </div>
-                <p class="medical-observation">Paciente evoluindo bem com o tratamento atual. Pressão arterial estável. Manter medicação conforme prescrito.</p>
-                <div class="medical-highlights">
-                  <span>✅ Medicações em dia</span>
-                  <span>✅ Alimentação adequada</span>
-                  <span>✅ Hidratação normal</span>
-                </div>
-              </div>
+    <!-- MAIN CONTENT -->
+    <main class="familiar-main">
 
-              <div class="medical-note-item">
-                <div class="medical-header">
-                  <div class="medical-doctor-name">Enfermeira Maria</div>
-                  <div class="medical-date-time">Ontem - 16:00</div>
-                </div>
-                <p class="medical-observation">Banho realizado com sucesso. Paciente colaborativo e comunicativo. Sem queixas de dor.</p>
-                <div class="medical-highlights">
-                  <span>✅ Paciente calmo</span>
-                  <span>✅ Sem dor</span>
-                </div>
-              </div>
+        <!-- PÁGINA: HOME -->
+        <div class="familiar-page active" id="page-home">
+            <!-- HERO CARD - STATUS DO DIA -->
+            <section class="hero-section">
+                <div class="hero-card">
+                    <div class="hero-header">
+                        <div class="resident-photo">
+                            <img src="https://via.placeholder.com/100?text=Residente" alt="Foto" id="heroPhoto">
+                        </div>
+                        <div class="hero-info">
+                            <h2 id="residentName">Carregando...</h2>
+                            <p id="lastUpdate">Última atualização: agora</p>
+                        </div>
+                    </div>
 
-              <div class="medical-note-item">
-                <div class="medical-header">
-                  <div class="medical-doctor-name">Dr. Carlos Silva</div>
-                  <div class="medical-date-time">2 dias atrás - 09:15</div>
+                    <div class="hero-body">
+                        <h3>Como foi o dia de hoje</h3>
+                        <div class="status-grid" id="statusGrid">
+                            <div class="status-item">
+                                <i class="fas fa-smile"></i>
+                                <span id="humor">Bem-disposto</span>
+                            </div>
+                            <div class="status-item">
+                                <i class="fas fa-utensils"></i>
+                                <span id="alimentacao">Alimentação OK</span>
+                            </div>
+                            <div class="status-item">
+                                <i class="fas fa-moon"></i>
+                                <span id="sono">Sono normal</span>
+                            </div>
+                            <div class="status-item">
+                                <i class="fas fa-heartbeat"></i>
+                                <span id="saude">Estável</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="hero-footer">
+                        <button class="btn-primary" onclick="switchPage('timeline')">
+                            Ver detalhes →
+                        </button>
+                    </div>
                 </div>
-                <p class="medical-observation">Avaliação geral positiva. Continuaremos com o tratamento atual. Agende próxima consulta em 2 semanas.</p>
-                <div class="medical-highlights">
-                  <span>✅ Progresso satisfatório</span>
+            </section>
+
+            <!-- RESUMO DO DIA -->
+            <section class="summary-section">
+                <h3>Resumo de Hoje</h3>
+                <div class="summary-content" id="summaryContent">
+                    <div class="summary-item">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Medicações administradas corretamente</span>
+                    </div>
                 </div>
-              </div>
+            </section>
+
+            <!-- MOMENTOS RECENTES -->
+            <section class="moments-section">
+                <h3>Momentos Especiais 📸</h3>
+                <div class="moments-carousel" id="momentsCarousel">
+                    <div class="moment-empty">
+                        <i class="fas fa-images"></i>
+                        <p>Nenhum momento registrado hoje</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- QUICK ACTIONS -->
+            <section class="quick-actions">
+                <button class="action-btn" onclick="openSolicitacao()">
+                    <i class="fas fa-paper-plane"></i>
+                    <span>Enviar Mensagem</span>
+                </button>
+                <button class="action-btn" onclick="switchPage('solicitacoes')">
+                    <i class="fas fa-comments"></i>
+                    <span>Ver Comunicações</span>
+                </button>
+            </section>
+        </div>
+
+        <!-- PÁGINA: TIMELINE -->
+        <div class="familiar-page" id="page-timeline">
+            <div class="timeline-header">
+                <h2>Acompanhamento Diário</h2>
+                <p>Evolução de <span id="timelineResidentName">Carregando...</span></p>
             </div>
-          </div>
+
+            <div class="timeline-feed" id="timelineFeed">
+                <div class="empty-state">
+                    <i class="fas fa-inbox"></i>
+                    <p>Nenhuma atualização ainda</p>
+                </div>
+            </div>
         </div>
-      </div>
+
+        <!-- PÁGINA: SOLICITAÇÕES -->
+        <div class="familiar-page" id="page-solicitacoes">
+            <div class="solicitacoes-header">
+                <h2>Comunicações com a Equipe</h2>
+                <button class="btn-primary" onclick="openNewRequest()">
+                    <i class="fas fa-plus"></i> Nova Solicitação
+                </button>
+            </div>
+
+            <div class="solicitacoes-list" id="solicitacoesList">
+                <div class="empty-state">
+                    <i class="fas fa-envelope"></i>
+                    <p>Nenhuma solicitação ainda</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- PÁGINA: MOMENTOS -->
+        <div class="familiar-page" id="page-momentos">
+            <div class="momentos-header">
+                <h2>Galeria de Momentos</h2>
+                <p>Memórias especiais do dia a dia</p>
+            </div>
+
+            <div class="momentos-grid" id="momentosGrid">
+                <div class="empty-state">
+                    <i class="fas fa-camera"></i>
+                    <p>Nenhum momento registrado ainda</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- PÁGINA: PERFIL -->
+        <div class="familiar-page" id="page-perfil">
+            <div class="perfil-container">
+                <h2>Meu Perfil</h2>
+                <div class="perfil-content">
+                    <div class="perfil-item">
+                        <label>Nome:</label>
+                        <span id="profileName">Carregando...</span>
+                    </div>
+                    <div class="perfil-item">
+                        <label>Email:</label>
+                        <span id="profileEmail">Carregando...</span>
+                    </div>
+                    <div class="perfil-item">
+                        <label>Residente:</label>
+                        <span id="profileResident">Carregando...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- MODAL: NOVA SOLICITAÇÃO -->
+    <div class="modal" id="newRequestModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Enviar Mensagem</h2>
+                <button class="close-btn" onclick="closeModal('newRequestModal')">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Assunto</label>
+                    <select id="requestType">
+                        <option value="solicitar_atualizacao">Solicitar Atualização</option>
+                        <option value="contato_medico">Contato com Médico</option>
+                        <option value="visita">Agendar Visita</option>
+                        <option value="informacao_importante">Informação Importante</option>
+                        <option value="duvida_medicacao">Dúvida sobre Medicação</option>
+                        <option value="outra">Outro Assunto</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Mensagem</label>
+                    <textarea id="requestContent" placeholder="Digite sua mensagem..." rows="4"></textarea>
+                </div>
+                <div class="emoji-picker">
+                    <button class="emoji-btn" onclick="insertEmoji('😊')">😊</button>
+                    <button class="emoji-btn" onclick="insertEmoji('❤️')">❤️</button>
+                    <button class="emoji-btn" onclick="insertEmoji('🙏')">🙏</button>
+                    <button class="emoji-btn" onclick="insertEmoji('😢')">😢</button>
+                    <button class="emoji-btn" onclick="insertEmoji('👍')">👍</button>
+                    <button class="emoji-btn" onclick="insertEmoji('🎉')">🎉</button>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeModal('newRequestModal')">Cancelar</button>
+                <button class="btn-primary" onclick="sendRequest()">Enviar</button>
+            </div>
+        </div>
     </div>
-  </main>
 
-  <script src="/js/familiar-dashboard.js"></script>
+    <!-- MODAL: DETALHE DO EVENTO -->
+    <div class="modal" id="eventDetailModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="eventTitle">Detalhes</h2>
+                <button class="close-btn" onclick="closeModal('eventDetailModal')">×</button>
+            </div>
+            <div class="modal-body" id="eventDetailContent">
+                <!-- Conteúdo dinâmico -->
+            </div>
+        </div>
+    </div>
+
+    <!-- NOTIFICAÇÕES -->
+    <div class="notifications-panel" id="notificationsPanel">
+        <div class="notifications-header">
+            <h3>Notificações</h3>
+            <button class="close-notifications" onclick="toggleNotifications()">×</button>
+        </div>
+        <div class="notifications-list" id="notificationsList">
+            <div class="empty-notification">
+                <i class="fas fa-check"></i>
+                <p>Sem notificações</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+    <script src="../js/familiar-dashboard.js"></script>
 </body>
 </html>
