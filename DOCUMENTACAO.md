@@ -24,8 +24,8 @@ Nao e software de ILPI - e uma ponte digital de confianca entre ILPI e familia.
 ## VARIAVEIS DE AMBIENTE (.env)
 NODE_ENV=production
 PORT=3000
-DATABASE_URL=postgresql://postgres:EPpAXyxdCanRlEldKQOSgDAagIUZNkjT@yamanote.proxy.rlwy.net:45526/railway
-JWT_SECRET=vivaris-care-secret-key-super-segura-2026
+DATABASE_URL=postgresql://postgres:***SENHA-NO-RAILWAY***@yamanote.proxy.rlwy.net:45526/railway
+JWT_SECRET=***VER-NO-RAILWAY***
 
 ## USUARIOS DE TESTE
 | Email | PIN | Role |
