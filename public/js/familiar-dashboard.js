@@ -56,16 +56,44 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 function connectSocket() {
     state.socket = io({
+        auth: { token: state.token },
         reconnection: true,
         reconnectionDelay: 1000,
         reconnectionDelayMax: 5000,
-        reconnectionAttempts: 5
+        reconnectionAttempts: 10
     });
 
     state.socket.on('connect', () => {
         console.log('✅ Socket conectado');
         if (state.currentResident) {
-            state.socket.emit('subscribe_timeline', { resident_id: state.currentResident.id });
+            state.socket.emit('subscribe_resident', { resident_id: state.currentResident.id });
+        }
+    });
+
+    state.socket.on('connect_error', (err) => {
+        console.warn('⚠️ Socket:', err.message);
+    });
+
+    // Chat: nova mensagem da equipe
+    state.socket.on('new_message', (msg) => {
+        if (msg.resident_id === state.currentResident?.id) {
+            if (msg.sender_id !== state.user.id) {
+                state.chatMessages = state.chatMessages || [];
+                state.chatMessages.push(msg);
+                renderFamiliarChat();
+                addNotification('Nova mensagem 💬', `${msg.sender_name}: ${msg.message_text.substring(0, 50)}`);
+            }
+        }
+    });
+
+    // Indicador digitando
+    let familiarTypingTimeout;
+    state.socket.on('typing', ({ user_name }) => {
+        const el = document.getElementById('familiarChatTyping');
+        if (el) {
+            el.textContent = `${user_name} está digitando...`;
+            clearTimeout(familiarTypingTimeout);
+            familiarTypingTimeout = setTimeout(() => { el.textContent = ''; }, 2000);
         }
     });
 
@@ -502,7 +530,9 @@ function switchPage(pageName) {
     document.getElementById(`page-${pageName}`).classList.add('active');
 
     document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active'));
-    document.querySelector(`.menu-item[onclick*="${pageName}"]`)?.classList.add('active');
+    document.querySelector(`.menu-item[onclick*="'${pageName}'"]`)?.classList.add('active');
+
+    if (pageName === 'chat') loadFamiliarChat();
 
     closeMenu();
 }
@@ -572,4 +602,114 @@ function humanizeType(type) {
         'nutrition': '🥗 Nutrição'
     };
     return types[type] || type;
+}
+
+// ============================================
+// CHAT COM A EQUIPE (TEMPO REAL)
+// ============================================
+
+async function loadFamiliarChat() {
+    if (!state.currentResident) return;
+
+    document.getElementById('chatResidentLabel').textContent = state.currentResident.full_name;
+
+    // Garantir que estamos na sala do residente
+    if (state.socket && state.socket.connected) {
+        state.socket.emit('subscribe_resident', { resident_id: state.currentResident.id });
+    }
+
+    try {
+        const res = await fetch(`/api/messages/resident/${state.currentResident.id}`, {
+            headers: { 'Authorization': `Bearer ${state.token}` }
+        });
+        const json = await res.json();
+        // API retorna do mais novo pro mais antigo; invertemos
+        state.chatMessages = (json.data || []).reverse();
+        renderFamiliarChat();
+    } catch (error) {
+        console.error('❌ Erro ao carregar chat:', error);
+    }
+}
+
+function renderFamiliarChat() {
+    const container = document.getElementById('familiarChatMessages');
+    if (!container) return;
+
+    if (!state.chatMessages || state.chatMessages.length === 0) {
+        container.innerHTML = `
+            <div class="empty-state">
+                <i class="fas fa-comment-dots"></i>
+                <p>Envie uma mensagem para a equipe de cuidados</p>
+            </div>
+        `;
+        return;
+    }
+
+    container.innerHTML = state.chatMessages.map(m => {
+        const isMine = m.sender_id === state.user.id;
+        return `
+            <div class="fam-bubble ${isMine ? 'mine' : 'theirs'}">
+                ${!isMine ? `<div class="fam-bubble-sender">${m.sender_name || 'Equipe'} 🩺</div>` : ''}
+                <div class="fam-bubble-text">${escapeHtmlChat(m.message_text)}</div>
+                <div class="fam-bubble-time">${formatChatTime(m.sent_at || m.created_at)}</div>
+            </div>
+        `;
+    }).join('');
+
+    container.scrollTop = container.scrollHeight;
+}
+
+async function sendFamiliarChatMessage() {
+    const input = document.getElementById('familiarChatInput');
+    const text = input.value.trim();
+    if (!text || !state.currentResident) return;
+
+    input.value = '';
+
+    try {
+        const res = await fetch('/api/messages', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${state.token}`
+            },
+            body: JSON.stringify({
+                resident_id: state.currentResident.id,
+                message_text: text
+            })
+        });
+
+        if (!res.ok) throw new Error('Erro ao enviar');
+
+        const json = await res.json();
+        state.chatMessages = state.chatMessages || [];
+        state.chatMessages.push({ ...json.data, sender_name: state.user.full_name });
+        renderFamiliarChat();
+    } catch (error) {
+        console.error('❌ Erro ao enviar mensagem:', error);
+        alert('Erro ao enviar. Tente novamente.');
+        input.value = text;
+    }
+}
+
+function emitFamiliarTyping() {
+    if (state.socket && state.socket.connected && state.currentResident) {
+        state.socket.emit('typing', { resident_id: state.currentResident.id });
+    }
+}
+
+function formatChatTime(dateString) {
+    if (!dateString) return '';
+    const d = new Date(dateString);
+    const isToday = d.toDateString() === new Date().toDateString();
+    return isToday
+        ? d.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
+        : d.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' }) + ' ' +
+          d.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+}
+
+function escapeHtmlChat(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
 }

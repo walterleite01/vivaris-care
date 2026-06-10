@@ -40,6 +40,18 @@ async function createEvent(req, res) {
       data: { id: eventId, resident_id, event_type, title }
     });
 
+    // Tempo real: notifica todos na sala do residente
+    const io = req.app.get('io');
+    if (io) {
+      io.to(`resident:${resident_id}`).emit('new_timeline_event', {
+        id: eventId, resident_id, event_type, title, content,
+        audience: audience || 'internal_only',
+        is_critical: is_critical || false,
+        author_name: req.user.full_name,
+        created_at: new Date().toISOString()
+      });
+    }
+
   } catch (error) {
     console.error('==> ERRO createEvent:', error.message);
     res.status(500).json({ error: 'Erro ao criar evento', details: error.message });

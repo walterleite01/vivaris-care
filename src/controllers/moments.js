@@ -36,6 +36,19 @@ async function createMoment(req, res) {
       moment_id: momentId
     });
 
+    // Tempo real: notifica a sala do residente
+    const io = req.app.get('io');
+    if (io) {
+      io.to(`resident:${resident_id}`).emit('new_moment', {
+        id: momentId, resident_id, moment_type, title,
+        description: description || null,
+        media_url: media_url || null, media_type: media_type || null,
+        audience: audience || 'family_visible',
+        posted_by_name: req.user.full_name,
+        created_at: new Date().toISOString()
+      });
+    }
+
   } catch (error) {
     console.error('==> ERRO createMoment:', error.message);
     res.status(500).json({ error: 'Erro ao criar momento', details: error.message });

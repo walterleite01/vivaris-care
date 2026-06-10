@@ -13,8 +13,8 @@ exports.sendMessage = async (req, res) => {
   try {
     const { resident_id, recipient_ids, message_text } = req.body;
 
-    // Validações
-    if (!resident_id || !message_text || !recipient_ids || recipient_ids.length === 0) {
+    // Validações (recipient_ids é opcional: chat aberto por residente)
+    if (!resident_id || !message_text) {
       return res.status(400).json({ error: 'Campos obrigatórios faltando' });
     }
 
@@ -28,8 +28,8 @@ exports.sendMessage = async (req, res) => {
       [messageId, resident_id, req.user.id, message_text]
     );
 
-    // Criar registros de recepção para cada destinatário
-    for (const recipientId of recipient_ids) {
+    // Criar registros de recepção para cada destinatário (se informados)
+    for (const recipientId of (recipient_ids || [])) {
       await pool.query(
         `INSERT INTO message_recipients (id, message_id, recipient_id, read_at)
          VALUES ($1, $2, $3, NULL)`,
@@ -37,11 +37,23 @@ exports.sendMessage = async (req, res) => {
       );
     }
 
+    const savedMessage = messageResult.rows[0];
+
     res.status(201).json({
       success: true,
       message: 'Mensagem enviada com sucesso',
-      data: messageResult.rows[0]
+      data: savedMessage
     });
+
+    // Tempo real: entrega o chat na sala do residente
+    const io = req.app.get('io');
+    if (io) {
+      io.to(`resident:${resident_id}`).emit('new_message', {
+        ...savedMessage,
+        sender_name: req.user.full_name,
+        sender_role: req.user.role
+      });
+    }
 
   } catch (error) {
     console.error('Error sending message:', error);

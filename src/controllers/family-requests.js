@@ -131,6 +131,17 @@ async function respondRequest(req, res) {
 
     res.json({ success: true, message: 'Solicitacao respondida' });
 
+    // Tempo real: avisa o familiar que a solicitação foi respondida
+    const io = req.app.get('io');
+    if (io) {
+      const reqResult = await query(`SELECT resident_id FROM family_requests WHERE id = $1`, [id]);
+      if (reqResult.rows[0]) {
+        io.to(`resident:${reqResult.rows[0].resident_id}`).emit('request_response', {
+          request_id: id, response, status: status || 'resolved'
+        });
+      }
+    }
+
   } catch (error) {
     res.status(500).json({ error: 'Erro ao responder solicitacao' });
   }

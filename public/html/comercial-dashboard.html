@@ -148,7 +148,7 @@
                   <i class="fas fa-chart-line"></i>
                   <span>Histórico</span>
                 </button>
-                <button class="action-card">
+                <button class="action-card" onclick="exportSalesCSV()">
                   <i class="fas fa-download"></i>
                   <span>Exportar</span>
                 </button>
@@ -231,7 +231,7 @@
               <h2>Contratos</h2>
               <p>Gerencie todos os seus contratos</p>
             </div>
-            <button class="btn btn-primary" onclick="switchPage('contracts'); return false;">
+            <button class="btn btn-primary" onclick="openNewContractModal()">
               <i class="fas fa-plus"></i> Novo Contrato
             </button>
           </div>
@@ -258,6 +258,87 @@
       </div>
     </div>
   </main>
+
+  <!-- MODAL: NOVO CONTRATO -->
+  <div class="modal" id="newContractModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2><i class="fas fa-file-contract"></i> Novo Contrato</h2>
+        <button class="close-btn" onclick="closeModal('newContractModal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label>Residente *</label>
+          <select id="contractResident"></select>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Data de Início *</label>
+            <input type="date" id="contractStartDate">
+          </div>
+          <div class="form-group">
+            <label>Data de Término</label>
+            <input type="date" id="contractEndDate">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Mensalidade (R$) *</label>
+            <input type="number" id="contractFee" placeholder="4500.00" step="0.01" min="0">
+          </div>
+          <div class="form-group">
+            <label>Forma de Pagamento</label>
+            <select id="contractPayment">
+              <option value="boleto">Boleto</option>
+              <option value="pix">PIX</option>
+              <option value="cartao">Cartão de Crédito</option>
+              <option value="transferencia">Transferência</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Nome do Responsável</label>
+          <input type="text" id="contractResponsible" placeholder="Nome do responsável financeiro">
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Plano de Saúde</label>
+            <input type="text" id="contractHealthPlan" placeholder="Ex: Unimed, Particular...">
+          </div>
+          <div class="form-group">
+            <label>Status</label>
+            <select id="contractStatus">
+              <option value="draft">Rascunho</option>
+              <option value="pending">Pendente de Assinatura</option>
+              <option value="active">Ativo (Assinado)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal('newContractModal')">Cancelar</button>
+        <button class="btn btn-primary" id="saveContractBtn" onclick="saveContract()">
+          <i class="fas fa-save"></i> Salvar Contrato
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: DETALHES DO RESIDENTE -->
+  <div class="modal" id="residentDetailModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2><i class="fas fa-user"></i> <span id="detailResidentName">Residente</span></h2>
+        <button class="close-btn" onclick="closeModal('residentDetailModal')">&times;</button>
+      </div>
+      <div class="modal-body" id="residentDetailBody">
+        <!-- Conteúdo dinâmico -->
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal('residentDetailModal')">Fechar</button>
+      </div>
+    </div>
+  </div>
 
   <script src="/js/comercial-dashboard.js"></script>
 </body>

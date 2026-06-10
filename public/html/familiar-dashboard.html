@@ -43,6 +43,9 @@
             <a href="#" class="menu-item" onclick="switchPage('solicitacoes'); return false;">
                 <i class="fas fa-comment-dots"></i> Solicitações
             </a>
+            <a href="#" class="menu-item" onclick="switchPage('chat'); return false;">
+                <i class="fas fa-comments"></i> Chat com a Equipe
+            </a>
             <a href="#" class="menu-item" onclick="switchPage('momentos'); return false;">
                 <i class="fas fa-images"></i> Momentos
             </a>
@@ -166,6 +169,31 @@
                 <div class="empty-state">
                     <i class="fas fa-envelope"></i>
                     <p>Nenhuma solicitação ainda</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- PÁGINA: CHAT COM A EQUIPE -->
+        <div class="familiar-page" id="page-chat">
+            <div class="chat-page-header">
+                <h2>💬 Chat com a Equipe</h2>
+                <p>Converse em tempo real sobre <span id="chatResidentLabel">seu familiar</span></p>
+            </div>
+            <div class="familiar-chat-box">
+                <div class="familiar-chat-messages" id="familiarChatMessages">
+                    <div class="empty-state">
+                        <i class="fas fa-comment-dots"></i>
+                        <p>Envie uma mensagem para a equipe de cuidados</p>
+                    </div>
+                </div>
+                <div class="familiar-chat-typing" id="familiarChatTyping"></div>
+                <div class="familiar-chat-input">
+                    <input type="text" id="familiarChatInput" placeholder="Digite sua mensagem..."
+                           onkeydown="if(event.key==='Enter') sendFamiliarChatMessage()"
+                           oninput="emitFamiliarTyping()">
+                    <button onclick="sendFamiliarChatMessage()">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
                 </div>
             </div>
         </div>

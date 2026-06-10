@@ -14,7 +14,9 @@ function authenticate(req, res, next) {
   }
 }
 
-function requireRole(roles) {
+function requireRole(...roles) {
+  // Aceita requireRole('admin', 'assistencial') ou requireRole(['admin', 'assistencial'])
+  if (roles.length === 1 && Array.isArray(roles[0])) roles = roles[0];
   return (req, res, next) => {
     if (!req.user) {
       return res.status(401).json({ error: 'Não autenticado' });

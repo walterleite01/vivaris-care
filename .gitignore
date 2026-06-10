@@ -141,3 +141,7 @@ dist
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 .vite/
+
+# Uploads locais (efêmeros no Railway - usar Cloudinary em produção)
+public/uploads/*
+!public/uploads/.gitkeep
